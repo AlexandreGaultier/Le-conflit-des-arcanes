@@ -6,13 +6,21 @@
         :key="`${cell.x}-${cell.y}`"
         class="board-cell"
         :class="[cell.type, { 'has-content': cell.content }]"
-        @click="handleCellClick(cell)"
+        @click="(event) => handleCellClick(cell, event)"
       >
         <div class="cell-coordinates">{{ cell.x }},{{ cell.y }}</div>
         <div v-if="cell.content" class="cell-content">
           {{ cell.content.name }}
         </div>
       </div>
+    </div>
+    <div 
+      v-for="particle in particles" 
+      :key="particle.id"
+      class="collect-particle"
+      :style="particle.style"
+    >
+      {{ particle.emoji }}
     </div>
   </div>
 </template>
@@ -21,6 +29,9 @@
 import { ref, computed, onMounted } from 'vue'
 import { BoardGenerator } from '@/services/BoardGenerator'
 import type { Cell } from '@/types/GameTypes'
+import { useIngredientsStore } from '@/store/modules/ingredients'
+import { IngredientType } from '@/types/IngredientTypes'
+import { CellType } from '@/types/GameTypes'
 
 const props = defineProps<{
   size: 8 | 10
@@ -28,6 +39,9 @@ const props = defineProps<{
 
 const board = ref<Cell[][]>([])
 const generator = new BoardGenerator()
+const ingredientsStore = useIngredientsStore()
+const particles = ref<Array<{id: number, type: IngredientType, style: any}>>([])
+let particleId = 0
 
 const boardStyle = computed(() => ({
   gridTemplateColumns: `repeat(${props.size}, 1fr)`
@@ -37,8 +51,79 @@ const regenerateBoard = () => {
   board.value = generator.generateBoard(props.size)
 }
 
-const handleCellClick = (cell: Cell) => {
-  console.log(`Cellule cliquée: (${cell.x},${cell.y}) - Type: ${cell.type}`)
+const getIngredientEmoji = (type: IngredientType): string => {
+  const emojis = {
+    [IngredientType.CRYSTAL]: '💎',
+    [IngredientType.HERB]: '🌿',
+    [IngredientType.MUSHROOM]: '🍄',
+    [IngredientType.ROOT]: '🌱',
+    [IngredientType.FLOWER]: '🌸',
+    [IngredientType.ESSENCE]: '✨',
+    [IngredientType.POWDER]: '⚗️',
+    [IngredientType.GEM]: '💠'
+  }
+  return emojis[type] || '✨'
+}
+
+const createCollectEffect = (cell: Cell, event: MouseEvent) => {
+  // Position de départ (position du clic)
+  const startX = event.clientX
+  const startY = event.clientY
+  
+  // Position finale (position de la sacoche - à ajuster selon votre layout)
+  const inventoryEl = document.querySelector('.ingredient-inventory')
+  if (!inventoryEl) return
+  
+  const inventoryRect = inventoryEl.getBoundingClientRect()
+  const endX = inventoryRect.left + inventoryRect.width / 2
+  const endY = inventoryRect.top + inventoryRect.height / 2
+
+  // Créer 5 particules
+  for (let i = 0; i < 5; i++) {
+    const particle = {
+      id: particleId++,
+      type: cell.content.type,
+      emoji: cell.content.emoji || getIngredientEmoji(cell.content.type),
+      style: {
+        position: 'fixed',
+        left: `${startX}px`,
+        top: `${startY}px`,
+        transform: 'translate(-50%, -50%)',
+        transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+        opacity: 1,
+        zIndex: 1000
+      }
+    }
+    
+    particles.value.push(particle)
+
+    // Ajouter un petit délai aléatoire pour chaque particule
+    setTimeout(() => {
+      particle.style.left = `${endX}px`
+      particle.style.top = `${endY}px`
+      particle.style.opacity = 0
+      
+      // Supprimer la particule après l'animation
+      setTimeout(() => {
+        particles.value = particles.value.filter(p => p.id !== particle.id)
+      }, 500)
+    }, i * 100)
+  }
+}
+
+const hasCollectedThisTurn = ref(false)
+
+const handleCellClick = (cell: Cell, event: MouseEvent) => {
+  if (cell.type === CellType.INGREDIENT && cell.content && !hasCollectedThisTurn.value) {
+    ingredientsStore.collectIngredient(1, cell.content)
+    createCollectEffect(cell, event)
+    hasCollectedThisTurn.value = true
+  }
+}
+
+// Cette fonction sera appelée quand le système de tours sera implémenté
+const resetTurn = () => {
+  hasCollectedThisTurn.value = false
 }
 
 onMounted(() => {
@@ -46,7 +131,8 @@ onMounted(() => {
 })
 
 defineExpose({
-  regenerateBoard
+  regenerateBoard,
+  resetTurn
 })
 </script>
 
@@ -218,5 +304,25 @@ defineExpose({
 
 .dense_wood:hover {
   box-shadow: 0 0 15px rgba(101, 67, 33, 0.5);
+}
+
+.collect-particle {
+  position: fixed;
+  pointer-events: none;
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+  animation: float 0.5s ease-out;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(360deg);
+  }
 }
 </style> 
