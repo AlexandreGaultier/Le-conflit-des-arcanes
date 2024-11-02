@@ -2,7 +2,7 @@
   <div class="game-board" :style="boardStyle">
     <div v-for="row in board" :key="row[0].y" class="board-row">
       <div 
-        v-for="cell in row" 
+        v-for="(cell, index) in row" 
         :key="`${cell.x}-${cell.y}`"
         class="board-cell"
         :class="[
@@ -11,9 +11,12 @@
             'has-character': getCharacterAtPosition(cell.x, cell.y),
             'movable': isMovableCell(cell.x, cell.y),
             'disabled': !isMovableCell(cell.x, cell.y) && !getCharacterAtPosition(cell.x, cell.y),
-            'collectable': canCollectIngredient(cell)
+            'collectable': canCollectIngredient(cell),
+            'has-ingredient': cell.type === 'ingredient',
           }
         ]"
+        :data-x="cell.x"
+        :data-y="cell.y"
         @click="handleCellClick(cell)"
       >
         {{ cell.content?.emoji }}
@@ -46,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useCharactersStore } from '@/store/modules/characters'
 import { useTurnsStore } from '@/store/modules/turns'
 import { useIngredientsStore } from '@/store/modules/ingredients'
@@ -54,6 +57,7 @@ import { CharacterClass } from '@/types/CharacterTypes'
 import { CellType } from '@/types/GameTypes'
 import type { Cell } from '@/types/GameTypes'
 import { IngredientType } from '@/types/IngredientTypes'
+import { toRaw } from 'vue'
 
 const charactersStore = useCharactersStore()
 const turnsStore = useTurnsStore()
@@ -101,7 +105,7 @@ const getCharacterClass = (characterClass: CharacterClass | undefined): string =
 
 const isMovableCell = (x: number, y: number): boolean => {
   if (!currentCharacter.value) {
-    console.log('Pas de personnage actif')
+    // console.log('Pas de personnage actif')
     return false
   }
 
@@ -111,7 +115,7 @@ const isMovableCell = (x: number, y: number): boolean => {
   }
 
   if (!currentCharacter.value.position) {
-    console.log('Position du personnage non définie')
+    // console.log('Position du personnage non définie')
     return false
   }
 
@@ -124,12 +128,11 @@ const isMovableCell = (x: number, y: number): boolean => {
 }
 
 const handleCellClick = (cell: Cell) => {
-  console.log('Clic sur la cellule:', cell)
-  
   if (isMovableCell(cell.x, cell.y)) {
     moveCharacter(cell.x, cell.y)
+  } else if (cell.type === 'ingredient' && !canCollectIngredient(cell)) {
+    console.log('💡 Pour collecter un ingrédient, déplacez-vous d\'abord sur sa case !')
   } else if (canCollectIngredient(cell)) {
-    console.log('AAAAAAAAAAAAAAAAAAAA Tentative de collecte')
     collectIngredient(cell)
   }
 }
@@ -137,62 +140,30 @@ const handleCellClick = (cell: Cell) => {
 const canCollectIngredient = (cell: Cell): boolean => {
   if (!currentCharacter.value?.position) return false
   
-  const isSamePosition = 
-    currentCharacter.value.position.x === cell.x && 
-    currentCharacter.value.position.y === cell.y
-
-  const canCollect = isSamePosition && 
-                    cell.type === CellType.INGREDIENT && 
-                    turnsStore.canPerformAction
-
-//   console.log('Peut collecter ?', {
-//     isSamePosition,
-//     cellType: cell.type,
-//     isIngredient: cell.type === CellType.INGREDIENT,
-//     canAct: turnsStore.canPerformAction,
-//     result: canCollect
-//   })
-
-  return canCollect
+  return currentCharacter.value.position.x === cell.x && 
+         currentCharacter.value.position.y === cell.y && 
+         cell.type === 'ingredient'
 }
 
 const collectIngredient = (cell: Cell) => {
-  if (!currentCharacter.value || !cell.content) {
-    console.log('Impossible de collecter : personnage ou contenu manquant')
-    return
-  }
+  if (!currentCharacter.value || !cell.content) return
 
-  console.log('AAAAAAAAAAAAAAAAAAAAAA Tentative de récolte :', {
-    character: currentCharacter.value.name,
-    ingredient: cell.content,
-    position: { x: cell.x, y: cell.y }
-  })
+  const ingredientsStore = useIngredientsStore()
+  
+  // Normalisation du type (suppression des accents et espaces)
+  const normalizedType = cell.content.name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Supprime les accents
+    .toUpperCase()
+    .replace(/ /g, '_') as IngredientType
 
-  if (turnsStore.useAction(1)) {
-    const ingredientsStore = useIngredientsStore()
-    
-    // Ajouter l'ingrédient
-    ingredientsStore.addIngredient(
-      currentCharacter.value.id,
-      {
-        type: cell.content.type as IngredientType,
-        quantity: 1
-      }
-    )
-
-    // Animation et nettoyage de la case
-    const cellElement = document.querySelector(`[data-x="${cell.x}"][data-y="${cell.y}"]`)
-    if (cellElement) {
-      cellElement.classList.add('collecting')
-      setTimeout(() => {
-        cellElement.classList.remove('collecting')
-        cell.type = CellType.EMPTY
-        cell.content = null
-      }, 500)
+  ingredientsStore.addIngredient(
+    currentCharacter.value.id,
+    {
+      type: normalizedType,
+      quantity: 1
     }
-
-    console.log('Récolte réussie ✅')
-  }
+  )
 }
 
 const moveCharacter = (x: number, y: number) => {
@@ -209,6 +180,7 @@ defineExpose({
   regenerateBoard: () => {}, // Add your regenerateBoard logic here
   resetTurn
 })
+
 </script>
 
 <style scoped lang="scss">
@@ -254,11 +226,28 @@ defineExpose({
 
   &.collectable {
     cursor: pointer;
-    box-shadow: inset 0 0 0 2px #42b883;
+    border: 2px solid #42b883;
+    animation: pulse 1.5s infinite;
     
     &:hover {
       background: rgba(66, 184, 131, 0.2);
     }
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(66, 184, 131, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(66, 184, 131, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(66, 184, 131, 0);
+    }
+  }
+
+  &.has-ingredient {
+    border: 1px solid rgba(66, 184, 131, 0.3);
   }
 }
 
@@ -381,7 +370,7 @@ defineExpose({
 }
 
 .dense_wood::before {
-  content: '🌳';
+  content: '';
   font-size: 1.2rem;
 }
 

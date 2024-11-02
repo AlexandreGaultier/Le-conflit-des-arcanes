@@ -57,29 +57,9 @@
     <div class="inventory-section">
       <h4>Inventaire</h4>
       <IngredientInventory 
-        :playerId="character.id"
-        :playerName="character.name"
+        :player-name="character.name"
+        :player-id="character.id"
       />
-    </div>
-
-    <div class="inventory">
-      <h3>Sacoche à ingrédients</h3>
-      <div class="inventory-grid">
-        <div 
-          v-for="(item, index) in character.inventory" 
-          :key="index"
-          class="inventory-slot"
-        >
-          <span class="item-emoji">{{ item?.emoji }}</span>
-        </div>
-        <div 
-          v-for="empty in 8 - (character.inventory?.length || 0)" 
-          :key="`empty-${empty}`"
-          class="inventory-slot empty"
-        >
-          ×
-        </div>
-      </div>
     </div>
   </div>
 </template>

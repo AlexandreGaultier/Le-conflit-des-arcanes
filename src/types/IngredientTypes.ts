@@ -1,12 +1,12 @@
 export enum IngredientType {
-  CRYSTAL = 'crystal',
-  HERB = 'herb',
-  MUSHROOM = 'mushroom',
-  ROOT = 'root',
-  FLOWER = 'flower',
-  ESSENCE = 'essence',
-  POWDER = 'powder',
-  GEM = 'gem'
+  CHAMPIGNONS_MAGIQUES = 'CHAMPIGNONS_MAGIQUES',
+  CRISTAUX_MANA = 'CRISTAUX_MANA',
+  HERBES_MYSTIQUES = 'HERBES_MYSTIQUES',
+  POUDRE_FEE = 'POUDRE_FEE',
+  RACINES_ANCIENNES = 'RACINES_ANCIENNES',
+  BAIES_ENCHANTEES = 'BAIES_ENCHANTEES',
+  PLUMES_PHENIX = 'PLUMES_PHENIX',
+  ESSENCE_ELEMENTAIRE = 'ESSENCE_ELEMENTAIRE'
 }
 
 export enum EffectType {

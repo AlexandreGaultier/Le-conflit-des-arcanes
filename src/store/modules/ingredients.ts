@@ -19,7 +19,10 @@ export const useIngredientsStore = defineStore('ingredients', {
 
   actions: {
     addIngredient(playerId: string, ingredient: { type: IngredientType, quantity: number }) {
-      console.log('Ajout ingrédient :', { playerId, ingredient })
+      console.log('Ajout ingrédient:', {
+        playerId,
+        ingredient
+      })
 
       if (!this.playerInventories[playerId]) {
         this.playerInventories[playerId] = []
@@ -32,14 +35,13 @@ export const useIngredientsStore = defineStore('ingredients', {
       if (existingItem) {
         existingItem.ingredient.quantity += ingredient.quantity
       } else {
-        this.playerInventories[playerId].push({ ingredient })
+        this.playerInventories[playerId].push({ 
+          ingredient: {
+            type: ingredient.type,
+            quantity: ingredient.quantity
+          }
+        })
       }
-
-      console.log('Inventaire mis à jour :', this.playerInventories[playerId])
-    },
-
-    getPlayerInventory(playerId: string): InventoryItem[] {
-      return this.playerInventories[playerId] || []
     }
   }
 }) 
