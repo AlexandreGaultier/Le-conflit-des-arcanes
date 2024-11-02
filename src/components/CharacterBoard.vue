@@ -13,6 +13,7 @@
     <div class="character-stats">
       <div class="stat-item">
         <span class="stat-label">PV</span>
+        <div>{{ character.hp }}/{{ character.maxHp }}</div>
         <div class="health-bar">
           <div 
             class="health-fill" 

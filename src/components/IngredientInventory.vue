@@ -1,19 +1,27 @@
 <template>
   <div class="ingredient-inventory">
-    <h3>Sacoche de {{ playerName }}</h3>
-    <div class="ingredients-list">
+    <h3>{{ playerName }}</h3>
+    <div class="ingredients-grid">
       <div 
-        v-for="item in store.getPlayerInventory(playerId)" 
-        :key="item.ingredient.id"
-        class="ingredient-item"
-        :class="{ 'can-use': canUseForSpell(item.ingredient) }"
+        v-for="i in 8" 
+        :key="i"
+        class="ingredient-slot"
       >
-        <div class="ingredient-icon">
-          {{ getIngredientEmoji(item.ingredient.type) }}
-        </div>
-        <div class="ingredient-info">
-          <span class="ingredient-name">{{ item.ingredient.name }}</span>
-          <span class="ingredient-quantity">x{{ item.quantity }}</span>
+        <template v-if="store.getPlayerInventory(playerId)[i-1]">
+          <div 
+            class="ingredient-item"
+            :class="{ 'can-use': canUseForSpell(store.getPlayerInventory(playerId)[i-1].ingredient) }"
+          >
+            <div class="ingredient-icon">
+              {{ getIngredientEmoji(store.getPlayerInventory(playerId)[i-1].ingredient.type) }}
+            </div>
+            <span class="ingredient-quantity">
+              x{{ store.getPlayerInventory(playerId)[i-1].quantity }}
+            </span>
+          </div>
+        </template>
+        <div v-else class="empty-slot">
+          <span class="empty-slot-icon">+</span>
         </div>
       </div>
     </div>
@@ -48,53 +56,64 @@ const getIngredientEmoji = (type: IngredientType): string => {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   padding: 1rem;
-  max-width: 300px;
 }
 
-.ingredients-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.ingredients-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.ingredient-slot {
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 .ingredient-item {
+  height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 6px;
+  justify-content: center;
+  gap: 0.25rem;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
   }
 
   &.can-use {
-    box-shadow: 0 0 0 2px #42b883;
+    box-shadow: inset 0 0 0 2px #42b883;
+  }
+
+  .ingredient-icon {
+    font-size: 1.5rem;
+  }
+
+  .ingredient-quantity {
+    font-size: 0.75rem;
+    background: rgba(66, 184, 131, 0.2);
+    color: #42b883;
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
   }
 }
 
-.ingredient-icon {
-  font-size: 1.5rem;
-  color: #64748b;
-}
-
-.ingredient-info {
+.empty-slot {
+  height: 100%;
   display: flex;
-  flex-direction: column;
-}
-
-.ingredient-name {
-  font-size: 0.875rem;
+  align-items: center;
+  justify-content: center;
   color: #64748b;
+  font-size: 1.5rem;
+  opacity: 0.5;
 }
 
-.ingredient-quantity {
-  background: rgba(66, 184, 131, 0.2);
-  color: #42b883;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+.empty-slot-icon {
+  transform: rotate(45deg);
 }
 </style> 
