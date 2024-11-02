@@ -91,6 +91,13 @@ const characterName = ref('')
 const selectedCharacters = ref<Character[]>([])
 const requiredPlayers = 2
 
+const DEFAULT_NAMES = {
+  [CharacterClass.ELEMENTALIST]: 'Ignis',
+  [CharacterClass.NECROMANCER]: 'Mortis',
+  [CharacterClass.ENCHANTER]: 'Lumina',
+  [CharacterClass.ALCHEMIST]: 'Sage'
+}
+
 const getClassEmoji = (characterClass: CharacterClass): string => {
   const emojis = {
     [CharacterClass.ELEMENTALIST]: '🔥',
@@ -113,7 +120,7 @@ const getClassName = (characterClass: CharacterClass): string => {
 
 const selectClass = (characterClass: CharacterClass) => {
   selectedClass.value = characterClass
-  characterName.value = ''
+  characterName.value = DEFAULT_NAMES[characterClass]
 }
 
 const createCharacter = () => {

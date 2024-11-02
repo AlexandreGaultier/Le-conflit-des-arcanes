@@ -6,6 +6,23 @@ interface CharactersState {
   selectedCharacter: Character | null;
 }
 
+interface InitialPosition {
+  player1: { x: number; y: number };
+  player2: { x: number; y: number };
+}
+
+const INITIAL_POSITIONS: InitialPosition = {
+  player1: { x: 0, y: 0 }, // Côté gauche du plateau
+  player2: { x: 7, y: 7 }  // Côté droit du plateau
+}
+
+const DEFAULT_NAMES = {
+  [CharacterClass.ELEMENTALIST]: 'Ignis',
+  [CharacterClass.NECROMANCER]: 'Mortis',
+  [CharacterClass.ENCHANTER]: 'Lumina',
+  [CharacterClass.ALCHEMIST]: 'Sage'
+}
+
 export const useCharactersStore = defineStore('characters', {
   state: (): CharactersState => ({
     characters: [],
@@ -13,16 +30,16 @@ export const useCharactersStore = defineStore('characters', {
   }),
 
   actions: {
-    createCharacter(characterClass: CharacterClass, name: string): Character {
-      const stats = CHARACTER_STATS[characterClass]
+    createCharacter(characterClass: CharacterClass, name?: string) {
+      const defaultName = DEFAULT_NAMES[characterClass]
       const character: Character = {
-        id: `${characterClass}-${Date.now()}`,
+        id: crypto.randomUUID(),
         class: characterClass,
-        name,
-        hp: stats.baseHp,
-        maxHp: stats.baseHp,
-        movement: stats.movement,
-        spells: stats.spells,
+        name: name || defaultName,
+        hp: CHARACTER_STATS[characterClass].baseHp,
+        maxHp: CHARACTER_STATS[characterClass].baseHp,
+        movement: CHARACTER_STATS[characterClass].movement,
+        spells: CHARACTER_STATS[characterClass].spells,
         level: 1,
         experience: 0
       }
@@ -54,6 +71,12 @@ export const useCharactersStore = defineStore('characters', {
           character.hp = character.maxHp
         }
       }
+    },
+
+    initializePositions() {
+      // Positionne les personnages à leurs positions de départ
+      this.characters[0].position = INITIAL_POSITIONS.player1
+      this.characters[1].position = INITIAL_POSITIONS.player2
     }
   }
 }) 

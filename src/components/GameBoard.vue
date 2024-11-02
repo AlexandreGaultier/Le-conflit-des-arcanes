@@ -5,13 +5,26 @@
         v-for="cell in row" 
         :key="`${cell.x}-${cell.y}`"
         class="board-cell"
-        :class="[cell.type, { 'has-content': cell.content }]"
-        @click="(event) => handleCellClick(cell, event)"
+        :class="[
+          cell.type,
+          { 'has-character': getCharacterAtPosition(cell.x, cell.y) }
+        ]"
+        @click="handleCellClick(cell)"
       >
-        <div class="cell-coordinates">{{ cell.x }},{{ cell.y }}</div>
+        <template v-if="getCharacterAtPosition(cell.x, cell.y)">
+          <div class="character-token" :class="{ 
+            'active': getCharacterAtPosition(cell.x, cell.y)?.id === currentCharacter?.id 
+          }">
+            {{ getClassEmoji(getCharacterAtPosition(cell.x, cell.y)?.class) }}
+          </div>
+        </template>
+        <template v-else>
+          {{ cell.content?.emoji }}
+          <div class="cell-coordinates">{{ cell.x }},{{ cell.y }}</div>
         <div v-if="cell.content" class="cell-content">
           {{ cell.content.name }}
         </div>
+        </template>
       </div>
     </div>
     <div 
@@ -32,6 +45,8 @@ import type { Cell } from '@/types/GameTypes'
 import { useIngredientsStore } from '@/store/modules/ingredients'
 import { IngredientType } from '@/types/IngredientTypes'
 import { CellType } from '@/types/GameTypes'
+import { useCharactersStore } from '@/store/modules/characters'
+import { CharacterClass } from '@/types/CharacterTypes'
 
 const props = defineProps<{
   size: 8 | 10
@@ -126,6 +141,25 @@ const resetTurn = () => {
   hasCollectedThisTurn.value = false
 }
 
+const charactersStore = useCharactersStore()
+const currentCharacter = computed(() => charactersStore.selectedCharacter)
+
+const getCharacterAtPosition = (x: number, y: number) => {
+  return charactersStore.characters.find(char => 
+    char.position?.x === x && char.position?.y === y
+  )
+}
+
+const getClassEmoji = (characterClass: CharacterClass): string => {
+  const emojis = {
+    [CharacterClass.ELEMENTALIST]: '🔥',
+    [CharacterClass.NECROMANCER]: '💀',
+    [CharacterClass.ENCHANTER]: '✨',
+    [CharacterClass.ALCHEMIST]: '⚗️'
+  }
+  return emojis[characterClass]
+}
+
 onMounted(() => {
   regenerateBoard()
 })
@@ -136,7 +170,7 @@ defineExpose({
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .game-board {
   display: grid;
   gap: 4px;
@@ -324,6 +358,53 @@ defineExpose({
   }
   100% {
     transform: translate(-50%, -50%) scale(1) rotate(360deg);
+  }
+}
+
+.character-token {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  z-index: 2;
+  
+  &.elementalist {
+    background: rgba(239, 68, 68, 0.8);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+  }
+  
+  &.necromancer {
+    background: rgba(99, 102, 241, 0.8);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+  }
+  
+  &.enchanter {
+    background: rgba(236, 72, 153, 0.8);
+    box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+  }
+  
+  &.alchemist {
+    background: rgba(16, 185, 129, 0.8);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+  }
+
+  &.active {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #42b883;
+  }
+}
+
+.board-cell {
+  position: relative;
+  
+  &.has-character {
+    background: rgba(66, 184, 131, 0.1);
   }
 }
 </style> 
