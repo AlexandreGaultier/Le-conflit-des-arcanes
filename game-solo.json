@@ -1,0 +1,214 @@
+{
+    "project": {
+      "name": "Le Conflit des Arcanes - Solo Edition",
+      "version": "1.0.0",
+      "description": "Version solo du jeu de plateau de sorciers et sorcières",
+      "tasks": [
+        {
+          "id": "SETUP-001",
+          "name": "Installation et configuration initiale",
+          "category": "Setup",
+          "priority": 1,
+          "status": "TODO",
+          "estimatedTime": "3h",
+          "dependencies": [],
+          "shortDescription": "Mise en place du projet Vue 3 avec TypeScript",
+          "detailedDescription": [
+            "Installation de Vue 3 avec Vue CLI",
+            "Configuration de TypeScript",
+            "Mise en place de Vuex 4",
+            "Configuration de Vue Router",
+            "Configuration des outils de développement (ESLint, Prettier)",
+            "Création de la structure de base du projet"
+          ],
+          "technicalRequirements": {
+            "frameworks": ["Vue 3", "TypeScript", "Vuex 4", "Vue Router"],
+            "devTools": ["ESLint", "Prettier", "Vue DevTools"]
+          },
+          "prompt": "Configure un nouveau projet Vue 3 avec TypeScript. Le projet doit inclure Vuex 4 et Vue Router. Montre-moi la structure des dossiers et les fichiers de configuration principaux."
+        },
+        {
+          "id": "SETUP-002",
+          "name": "Configuration du store Vuex",
+          "category": "Setup",
+          "priority": 2,
+          "status": "TODO",
+          "estimatedTime": "2h",
+          "dependencies": ["SETUP-001"],
+          "shortDescription": "Mise en place de la structure Vuex pour le jeu solo",
+          "detailedDescription": [
+            "Module pour la gestion du joueur",
+            "Module pour la gestion du plateau",
+            "Module pour la gestion des sorts et ingrédients",
+            "Module pour la gestion de l'état du jeu",
+            "Configuration des types TypeScript pour le store"
+          ],
+          "technicalRequirements": {
+            "frameworks": ["Vuex 4", "TypeScript"],
+            "patterns": ["Module pattern", "State management"]
+          },
+          "prompt": "Crée la structure du store Vuex pour le jeu solo. Je veux voir les modules pour le joueur, le plateau, les sorts/ingrédients et l'état du jeu. Utilise TypeScript pour typer le store."
+        },
+        {
+          "id": "UI-001",
+          "name": "Composants de base",
+          "category": "UI",
+          "priority": 3,
+          "status": "TODO",
+          "estimatedTime": "6h",
+          "dependencies": ["SETUP-001"],
+          "shortDescription": "Création des composants UI réutilisables",
+          "detailedDescription": [
+            "Boutons stylisés",
+            "Cartes pour les sorts et ingrédients",
+            "Modal de dialogue",
+            "Composant de notification",
+            "Mise en place du système de thème"
+          ],
+          "technicalRequirements": {
+            "frameworks": ["Vue 3", "TypeScript"],
+            "styling": ["SCSS", "CSS Variables"]
+          },
+          "prompt": "Crée les composants UI de base pour notre jeu solo. Je veux voir les composants principaux avec leur style SCSS et leur typage TypeScript."
+        },
+        {
+          "id": "GAME-001",
+          "name": "Types et interfaces",
+          "category": "GAME",
+          "priority": 3,
+          "status": "TODO",
+          "estimatedTime": "3h",
+          "dependencies": ["SETUP-001"],
+          "shortDescription": "Définition des types de base du jeu",
+          "detailedDescription": [
+            "Interface Player",
+            "Interface Spell",
+            "Interface Ingredient",
+            "Types pour les actions du jeu",
+            "Enums pour les états du jeu"
+          ],
+          "technicalRequirements": {
+            "language": ["TypeScript"]
+          },
+          "prompt": "Définis les interfaces et types TypeScript nécessaires pour le jeu solo. Inclus les interfaces pour le joueur, les sorts, les ingrédients et les états du jeu."
+        },
+        {
+          "id": "GAME-002",
+          "name": "Système de plateau",
+          "category": "GAME",
+          "priority": 4,
+          "status": "TODO",
+          "estimatedTime": "8h",
+          "dependencies": ["GAME-001", "UI-001"],
+          "shortDescription": "Création du plateau de jeu",
+          "detailedDescription": [
+            "Création de la grille de jeu",
+            "Système de cases et zones",
+            "Gestion des déplacements",
+            "Zones spéciales",
+            "Système de collecte d'ingrédients"
+          ],
+          "technicalRequirements": {
+            "frameworks": ["Vue 3", "TypeScript"],
+            "patterns": ["Grid system"]
+          },
+          "prompt": "Implémente le système de plateau de jeu avec la grille, les zones spéciales et la collecte d'ingrédients. Le plateau doit être interactif et réactif aux actions du joueur."
+        },
+        {
+          "id": "GAME-003",
+          "name": "Système de sorts",
+          "category": "GAME",
+          "priority": 5,
+          "status": "TODO",
+          "estimatedTime": "6h",
+          "dependencies": ["GAME-001", "GAME-002"],
+          "shortDescription": "Système de création et utilisation des sorts",
+          "detailedDescription": [
+            "Système de création de sorts",
+            "Gestion des ingrédients",
+            "Combinaisons et recettes",
+            "Effets des sorts",
+            "Interface de craft"
+          ],
+          "technicalRequirements": {
+            "frameworks": ["Vue 3", "Vuex 4"],
+            "patterns": ["Factory pattern"]
+          },
+          "prompt": "Crée le système de création et d'utilisation des sorts. Implémente la logique de craft et les effets des sorts sur le jeu."
+        },
+        {
+          "id": "GAME-004",
+          "name": "Logique de jeu principale",
+          "category": "GAME",
+          "priority": 6,
+          "status": "TODO",
+          "estimatedTime": "8h",
+          "dependencies": ["GAME-002", "GAME-003"],
+          "shortDescription": "Implémentation de la boucle de jeu principale",
+          "detailedDescription": [
+            "Système de tours",
+            "Gestion des actions du joueur",
+            "Système de progression",
+            "Conditions de victoire/défaite",
+            "Sauvegarde locale"
+          ],
+          "technicalRequirements": {
+            "frameworks": ["Vue 3", "Vuex 4"],
+            "storage": ["LocalStorage"]
+          },
+          "prompt": "Implémente la boucle de jeu principale avec le système de tours, les actions possibles et les conditions de victoire/défaite. Inclus une sauvegarde locale de la progression."
+        },
+        {
+          "id": "TEST-001",
+          "name": "Tests unitaires et d'intégration",
+          "category": "Testing",
+          "priority": 7,
+          "status": "TODO",
+          "estimatedTime": "8h",
+          "dependencies": ["GAME-004"],
+          "shortDescription": "Mise en place des tests",
+          "detailedDescription": [
+            "Tests unitaires des composants",
+            "Tests des modules Vuex",
+            "Tests de la logique de jeu",
+            "Tests d'intégration"
+          ],
+          "technicalRequirements": {
+            "frameworks": ["Jest", "Vue Test Utils"],
+            "patterns": ["TDD"]
+          },
+          "prompt": "Crée une suite de tests pour les composants principaux et la logique de jeu. Assure-toi de couvrir les cas d'utilisation principaux."
+        },
+        {
+          "id": "CI-001",
+          "name": "Configuration CI GitHub",
+          "category": "CI",
+          "priority": 8,
+          "status": "TODO",
+          "estimatedTime": "4h",
+          "dependencies": ["TEST-001"],
+          "shortDescription": "Mise en place de la CI GitHub",
+          "detailedDescription": [
+            "Configuration GitHub Actions",
+            "Pipeline de build",
+            "Exécution des tests",
+            "Vérification du linting",
+            "Déploiement automatique"
+          ],
+          "technicalRequirements": {
+            "tools": ["GitHub Actions"],
+            "hosting": ["GitHub Pages"]
+          },
+          "prompt": "Configure une CI GitHub avec Actions pour automatiser les tests, le linting et le déploiement du jeu."
+        }
+      ],
+      "technicalStack": {
+        "frontend": {
+          "mainFramework": "Vue 3",
+          "language": "TypeScript",
+          "stateManagement": "Vuex 4",
+          "routing": "Vue Router"
+        }
+      }
+    }
+  }

@@ -1,0 +1,204 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Système de plateau",
+      "description": "Créer le système de génération de plateau avec les différents types de cases.",
+      "priority": "Élevée",
+      "status": "todo",
+      "startDate": "2024-03-20",
+      "endDate": "2024-03-22",
+      "details": {
+        "technicalRequirements": [
+          "Grille 8x8 ou 10x10",
+          "Génération aléatoire équilibrée",
+          "Différents types de cases (vide, ingrédients, objets, monstres, spéciales)",
+          "Système de coordonnées"
+        ],
+        "dependencies": [],
+        "estimatedTime": "20h",
+        "prompt": "Créer un système de génération de plateau de jeu en Vue 3 et TypeScript avec les spécifications suivantes:\n- Grille configurable (8x8 ou 10x10)\n- Distribution aléatoire mais équilibrée des cases:\n  * 30% cases vides\n  * 25% cases d'ingrédients\n  * 20% cases d'objets\n  * 15% cases de monstres\n  * 10% cases spéciales\n- Système de coordonnées pour le placement\n- Interface réactive pour visualiser le plateau\n- Tests unitaires pour la génération"
+      }
+    },
+    {
+      "id": 2,
+      "title": "Système d'ingrédients",
+      "description": "Implémenter les 8 types d'ingrédients avec leurs effets.",
+      "priority": "Moyenne",
+      "status": "todo",
+      "startDate": "2024-03-23",
+      "endDate": "2024-03-24",
+      "details": {
+        "technicalRequirements": [
+          "Système de collecte",
+          "Inventaire des ingrédients",
+          "Effets spécifiques par type",
+          "Interface de gestion"
+        ],
+        "dependencies": [1],
+        "estimatedTime": "15h",
+        "prompt": "Développer un système d'ingrédients avec:\n- 8 types d'ingrédients uniques\n- Système d'inventaire\n- Effets spécifiques pour chaque type\n- Interface de collecte et gestion\n- Système de combinaison\nUtiliser TypeScript pour le typage strict des ingrédients et leurs effets."
+      }
+    },
+    {
+      "id": 3,
+      "title": "Système d'objets",
+      "description": "Développer les 5 types d'objets et leurs effets.",
+      "priority": "Moyenne",
+      "status": "todo",
+      "startDate": "2024-03-25",
+      "endDate": "2024-03-26",
+      "details": {
+        "technicalRequirements": [
+          "Système d'équipement",
+          "Effets des objets",
+          "Interface d'inventaire",
+          "Système de bonus"
+        ],
+        "dependencies": [1],
+        "estimatedTime": "12h",
+        "prompt": "Créer un système d'objets avec:\n- 5 types d'objets (Baguette, Grimoire, Amulette, Bottes, Potion)\n- Effets uniques pour chaque objet\n- Système d'équipement\n- Interface d'inventaire\n- Gestion des bonus/malus"
+      }
+    },
+    {
+      "id": 4,
+      "title": "Système de monstres",
+      "description": "Créer le système de combat contre les monstres.",
+      "priority": "Élevée",
+      "status": "todo",
+      "startDate": "2024-03-27",
+      "endDate": "2024-03-29",
+      "details": {
+        "technicalRequirements": [
+          "Différents types de monstres",
+          "Système de combat avec dés",
+          "Récompenses variables",
+          "Interface de combat"
+        ],
+        "dependencies": [1],
+        "estimatedTime": "25h",
+        "prompt": "Implémenter un système de monstres avec:\n- 3 types de monstres (petit, moyen, grand)\n- Système de combat basé sur les dés (1d6)\n- Seuils de réussite différents (2-3, 4, 5-6)\n- Système de récompenses aléatoires\n- Interface de combat interactive\n- Animations de combat"
+      }
+    },
+    {
+      "id": 5,
+      "title": "Création des personnages",
+      "description": "Implémenter les 4 classes de personnages avec leurs caractéristiques.",
+      "priority": "Élevée",
+      "status": "todo",
+      "startDate": "2024-03-30",
+      "endDate": "2024-04-02",
+      "details": {
+        "technicalRequirements": [
+          "Stats de base",
+          "Sorts spécifiques",
+          "Système de déplacement",
+          "Interface de personnage"
+        ],
+        "dependencies": [],
+        "estimatedTime": "30h",
+        "prompt": "Développer le système de personnages avec:\n- 4 classes (Élémentaliste, Nécromancien, Enchanteur, Alchimiste)\n- Stats uniques par classe (PV, déplacement)\n- 3 sorts par classe avec effets spécifiques\n- Interface de sélection de personnage\n- Système de progression\n- Animations des sorts"
+      }
+    },
+    {
+      "id": 6,
+      "title": "Système de tours",
+      "description": "Développer le système de tours et d'actions.",
+      "priority": "Élevée",
+      "status": "todo",
+      "startDate": "2024-04-03",
+      "endDate": "2024-04-04",
+      "details": {
+        "technicalRequirements": [
+          "Phases de jeu",
+          "Système d'actions",
+          "Gestion des effets",
+          "Interface de tour"
+        ],
+        "dependencies": [1, 5],
+        "estimatedTime": "20h",
+        "prompt": "Créer un système de tours complet:\n- 3 phases (début, action, fin)\n- 3 actions par tour\n- Gestion des coûts d'action\n- Effets de début/fin de tour\n- Interface de gestion des actions\n- Indicateurs visuels du tour en cours"
+      }
+    },
+    {
+      "id": 7,
+      "title": "Système de combat",
+      "description": "Implémenter le système de combat entre sorciers.",
+      "priority": "Élevée",
+      "status": "todo",
+      "startDate": "2024-04-05",
+      "endDate": "2024-04-07",
+      "details": {
+        "technicalRequirements": [
+          "Résolution des sorts",
+          "Système de dégâts",
+          "Utilisation d'objets",
+          "Interface de combat"
+        ],
+        "dependencies": [3, 5],
+        "estimatedTime": "25h",
+        "prompt": "Développer le système de combat PvP:\n- Résolution automatique des sorts\n- Calcul des dégâts avec bonus/malus\n- Intégration des objets de combat\n- Interface de combat joueur contre joueur\n- Animations d'attaque et de défense\n- Log de combat détaillé"
+      }
+    },
+    {
+      "id": 8,
+      "title": "IA Ennemie",
+      "description": "Développer l'intelligence artificielle pour le mode solo.",
+      "priority": "Moyenne",
+      "status": "todo",
+      "startDate": "2024-04-08",
+      "endDate": "2024-04-11",
+      "details": {
+        "technicalRequirements": [
+          "Trois niveaux de difficulté",
+          "Système de prise de décision",
+          "Stratégies de jeu",
+          "Tests et équilibrage"
+        ],
+        "dependencies": [1, 5, 6, 7],
+        "estimatedTime": "35h",
+        "prompt": "Créer une IA avec 3 niveaux de difficulté:\n- Niveau facile: actions aléatoires\n- Niveau moyen: priorité collecte et combat proche\n- Niveau difficile: stratégie optimisée\n- Système de prise de décision\n- Évaluation de la situation de jeu\n- Tests d'équilibrage"
+      }
+    },
+    {
+      "id": 9,
+      "title": "Système de victoire",
+      "description": "Implémenter les conditions de victoire et le système de points.",
+      "priority": "Moyenne",
+      "status": "todo",
+      "startDate": "2024-04-12",
+      "endDate": "2024-04-13",
+      "details": {
+        "technicalRequirements": [
+          "Calcul des points",
+          "Vérification des conditions",
+          "Interface de score",
+          "Système de fin de partie"
+        ],
+        "dependencies": [4, 7],
+        "estimatedTime": "10h",
+        "prompt": "Implémenter le système de victoire:\n- Points par action (monstres=1, sorciers=3)\n- Contrôle de zones (1pt/tour pour 3 zones)\n- Interface de score en temps réel\n- Écran de fin de partie\n- Statistiques de partie"
+      }
+    },
+    {
+      "id": 10,
+      "title": "Interface utilisateur",
+      "description": "Créer l'interface utilisateur complète du jeu.",
+      "priority": "Élevée",
+      "status": "todo",
+      "startDate": "2024-04-14",
+      "endDate": "2024-04-17",
+      "details": {
+        "technicalRequirements": [
+          "Design responsive",
+          "Animations",
+          "Menus et navigation",
+          "Feedback visuel"
+        ],
+        "dependencies": [],
+        "estimatedTime": "40h",
+        "prompt": "Développer l'interface utilisateur complète:\n- Menu principal\n- Écran de sélection des personnages\n- Interface de jeu principale\n- Animations et transitions\n- Sons et effets visuels\n- Design responsive\n- Thème dark/light"
+      }
+    }
+  ]
+} 

@@ -1,0 +1,558 @@
+{
+    "project": {
+        "name": "Le Conflit des Arcanes",
+        "version": "1.0.0",
+        "description": "Jeu de plateau digital de sorciers et sorcières",
+        "tasks": [
+            {
+                "id": "SETUP-001",
+                "name": "Installation et configuration initiale",
+                "category": "Setup",
+                "priority": 1,
+                "status": "TODO",
+                "estimatedTime": "4h",
+                "dependencies": [],
+                "shortDescription": "Mise en place du projet Vue 3 avec TypeScript",
+                "detailedDescription": [
+                    "Installation de Vue 3 avec Vue CLI",
+                    "Configuration de TypeScript",
+                    "Mise en place de Vuex 4",
+                    "Configuration de Vue Router",
+                    "Installation de Socket.io-client",
+                    "Configuration des outils de développement (ESLint, Prettier)",
+                    "Création de la structure de base du projet"
+                ],
+                "technicalRequirements": {
+                    "frameworks": [
+                        "Vue 3",
+                        "TypeScript",
+                        "Vuex 4",
+                        "Vue Router",
+                        "Socket.io"
+                    ],
+                    "devTools": [
+                        "ESLint",
+                        "Prettier",
+                        "Vue DevTools"
+                    ]
+                },
+                "prompt": "Configure un nouveau projet Vue 3 avec TypeScript. Le projet doit inclure Vuex 4, Vue Router et Socket.io. Montre-moi la structure des dossiers et les fichiers de configuration principaux. Assure-toi d'inclure les configurations pour TypeScript, ESLint et Prettier."
+            },
+            {
+                "id": "SETUP-002",
+                "name": "Configuration du store Vuex",
+                "category": "Setup",
+                "priority": 2,
+                "status": "TODO",
+                "estimatedTime": "3h",
+                "dependencies": [
+                    "SETUP-001"
+                ],
+                "shortDescription": "Mise en place de la structure Vuex pour le jeu",
+                "detailedDescription": [
+                    "Création des modules Vuex pour les différentes parties du jeu",
+                    "Module pour la gestion des joueurs",
+                    "Module pour la gestion du plateau",
+                    "Module pour la gestion des sorts et ingrédients",
+                    "Module pour la gestion de l'état du jeu",
+                    "Configuration des types TypeScript pour le store"
+                ],
+                "technicalRequirements": {
+                    "frameworks": [
+                        "Vuex 4",
+                        "TypeScript"
+                    ],
+                    "patterns": [
+                        "Module pattern",
+                        "State management"
+                    ]
+                },
+                "prompt": "Crée la structure complète du store Vuex pour le jeu de plateau. Je veux voir les modules pour les joueurs, le plateau, les sorts/ingrédients et l'état du jeu. Utilise TypeScript pour typer correctement le store et ses modules. Inclus les actions, mutations et getters principaux."
+            },
+            {
+                "id": "SETUP-003",
+                "name": "Configuration des routes",
+                "category": "Setup",
+                "priority": 2,
+                "status": "TODO",
+                "estimatedTime": "2h",
+                "dependencies": [
+                    "SETUP-001"
+                ],
+                "shortDescription": "Mise en place du routeur Vue avec les pages principales",
+                "detailedDescription": [
+                    "Configuration du Vue Router",
+                    "Création des routes principales",
+                    "Page d'accueil",
+                    "Page de lobby",
+                    "Page de jeu",
+                    "Page de règles",
+                    "Gestion des guards pour les routes protégées"
+                ],
+                "technicalRequirements": {
+                    "frameworks": [
+                        "Vue Router",
+                        "TypeScript"
+                    ],
+                    "patterns": [
+                        "Navigation guards",
+                        "Lazy loading"
+                    ]
+                },
+                "prompt": "Configure le Vue Router pour notre jeu. Je veux voir toutes les routes principales (accueil, lobby, jeu, règles) avec leur configuration TypeScript. Inclus les guards nécessaires pour protéger les routes de jeu et montre comment implémenter le lazy loading pour optimiser le chargement."
+            },
+            {
+                "id": "NETWORK-001",
+                "name": "Configuration Socket.io",
+                "category": "Network",
+                "priority": 3,
+                "status": "TODO",
+                "estimatedTime": "4h",
+                "dependencies": [
+                    "SETUP-001",
+                    "SETUP-002"
+                ],
+                "shortDescription": "Mise en place de la connexion WebSocket",
+                "detailedDescription": [
+                    "Configuration du client Socket.io",
+                    "Création du service de connexion",
+                    "Mise en place des événements de base",
+                    "Gestion de la connexion/déconnexion",
+                    "Typage des événements WebSocket",
+                    "Intégration avec le store Vuex"
+                ],
+                "technicalRequirements": {
+                    "frameworks": [
+                        "Socket.io-client",
+                        "TypeScript",
+                        "Vuex 4"
+                    ],
+                    "patterns": [
+                        "Observer pattern",
+                        "Service pattern"
+                    ]
+                },
+                "prompt": "Implémente la configuration Socket.io pour notre jeu. Je veux voir la création d'un service WebSocket typé avec TypeScript, l'intégration avec Vuex, et la gestion des événements de base. Montre comment gérer la connexion/déconnexion et comment typer les événements WebSocket."
+            },
+            {
+                "id": "UI-001",
+                "name": "Création des composants de base",
+                "category": "UI",
+                "priority": 4,
+                "status": "TODO",
+                "estimatedTime": "8h",
+                "dependencies": ["SETUP-001", "SETUP-002", "SETUP-003"],
+                "shortDescription": "Création des composants UI réutilisables",
+                "detailedDescription": [
+                  "Création d'une bibliothèque de composants",
+                  "Boutons stylisés pour le jeu",
+                  "Cartes pour les sorts et ingrédients",
+                  "Modal de dialogue",
+                  "Composant de notification",
+                  "Composant de chargement",
+                  "Mise en place du système de thème"
+                ],
+                "technicalRequirements": {
+                  "frameworks": ["Vue 3", "TypeScript"],
+                  "styling": ["SCSS", "CSS Variables"],
+                  "patterns": ["Atomic Design", "Component Composition"]
+                },
+                "prompt": "Crée une bibliothèque de composants UI réutilisables pour notre jeu. Je veux voir les composants de base (boutons, cartes, modals, notifications) avec leur typage TypeScript et leur style SCSS. Utilise le système de composition de Vue 3 et assure-toi que les composants sont réactifs et bien typés."
+              },
+              {
+                "id": "GAME-001",
+                "name": "Création des types de base du jeu",
+                "category": "GAME",
+                "priority": 4,
+                "status": "TODO",
+                "estimatedTime": "4h",
+                "dependencies": ["SETUP-001"],
+                "shortDescription": "Définition des interfaces et types TypeScript",
+                "detailedDescription": [
+                  "Interface Player",
+                  "Interface Spell",
+                  "Interface Ingredient",
+                  "Types pour les actions du jeu",
+                  "Enums pour les états du jeu",
+                  "Types pour les événements WebSocket",
+                  "Interface pour le plateau de jeu"
+                ],
+                "technicalRequirements": {
+                  "language": ["TypeScript"],
+                  "patterns": ["Type definition", "Interface segregation"]
+                },
+                "prompt": "Définis toutes les interfaces et types TypeScript nécessaires pour le jeu. Je veux voir les interfaces pour les joueurs, les sorts, les ingrédients, ainsi que les types pour les actions et les états du jeu. Assure-toi que tout est bien documenté avec des commentaires JSDoc."
+              },
+              {
+                "id": "GAME-002",
+                "name": "Système de gestion des joueurs",
+                "category": "GAME",
+                "priority": 5,
+                "status": "TODO",
+                "estimatedTime": "6h",
+                "dependencies": ["GAME-001", "NETWORK-001"],
+                "shortDescription": "Implémentation de la gestion des joueurs",
+                "detailedDescription": [
+                  "Création/Suppression de joueur",
+                  "Gestion des factions",
+                  "Système d'inventaire",
+                  "Gestion des sorts appris",
+                  "État du joueur dans la partie",
+                  "Synchronisation via WebSocket",
+                  "Intégration avec le store Vuex"
+                ],
+                "technicalRequirements": {
+                  "frameworks": ["Vue 3", "Vuex 4", "Socket.io"],
+                  "patterns": ["Observer pattern", "State management"]
+                },
+                "prompt": "Implémente le système de gestion des joueurs. Je veux voir la création des joueurs, la gestion des factions, l'inventaire, et la synchronisation avec les autres joueurs via WebSocket. Utilise Vuex pour la gestion d'état et assure-toi que tout est typé avec TypeScript."
+              },
+              {
+                "id": "GAME-003",
+                "name": "Système de plateau de jeu",
+                "category": "GAME",
+                "priority": 5,
+                "status": "TODO",
+                "estimatedTime": "10h",
+                "dependencies": ["GAME-001", "UI-001"],
+                "shortDescription": "Création du plateau de jeu interactif",
+                "detailedDescription": [
+                  "Création de la grille de jeu",
+                  "Système de cases et zones",
+                  "Gestion des déplacements",
+                  "Zones spéciales (forêt, montagnes, marais)",
+                  "Système de collecte d'ingrédients",
+                  "Animation des déplacements",
+                  "Interaction avec les éléments du plateau"
+                ],
+                "technicalRequirements": {
+                  "frameworks": ["Vue 3", "TypeScript"],
+                  "patterns": ["Grid system", "Event handling"],
+                  "animations": ["CSS Transitions", "Vue Transitions"]
+                },
+                "prompt": "Crée le système de plateau de jeu interactif. Je veux voir la grille de jeu avec les différentes zones, la gestion des déplacements, et les interactions possibles. Utilise un système de composants modulaire et assure-toi que tout est réactif et animé."
+              },
+              {
+                "id": "GAME-004",
+                "name": "Système de sorts et d'ingrédients",
+                "category": "GAME",
+                "priority": 6,
+                "status": "TODO",
+                "estimatedTime": "8h",
+                "dependencies": ["GAME-001", "GAME-002"],
+                "shortDescription": "Implémentation du système de craft et de sorts",
+                "detailedDescription": [
+                  "Système de création de sorts",
+                  "Gestion des ingrédients",
+                  "Combinaisons et recettes",
+                  "Effets des sorts",
+                  "Système de puissance et d'équilibrage",
+                  "Interface de craft",
+                  "Animations des sorts"
+                ],
+                "technicalRequirements": {
+                  "frameworks": ["Vue 3", "Vuex 4"],
+                  "patterns": ["Factory pattern", "Strategy pattern"],
+                  "animations": ["CSS Animations", "Vue Transitions"]
+                },
+                "prompt": "Implémente le système de sorts et d'ingrédients. Je veux voir le système de craft avec les combinaisons possibles, la gestion des effets des sorts, et l'interface utilisateur pour la création de sorts. Assure-toi que le système est extensible et bien équilibré."
+              },
+              {
+                "id": "GAME-005",
+                "name": "Système de combat",
+                "category": "GAME",
+                "priority": 7,
+                "status": "TODO",
+                "estimatedTime": "12h",
+                "dependencies": ["GAME-002", "GAME-004"],
+                "shortDescription": "Implémentation du système de combat entre joueurs",
+                "detailedDescription": [
+                  "Mécanique de lancement de sorts",
+                  "Système de dés virtuel",
+                  "Calcul des dégâts et effets",
+                  "Gestion des tours de combat",
+                  "Animations de combat",
+                  "Interface de combat",
+                  "Log des actions de combat",
+                  "Système de modificateurs"
+                ],
+                "technicalRequirements": {
+                  "frameworks": ["Vue 3", "Vuex 4", "Socket.io"],
+                  "patterns": ["State machine", "Command pattern"],
+                  "animations": ["CSS Animations", "Vue Transitions"]
+                },
+                "prompt": "Implémente le système de combat complet. Je veux voir la gestion des tours, le lancement de sorts, le système de dés, les calculs de dégâts et les animations. Assure-toi que tout est synchronisé entre les joueurs via WebSocket et que le combat est fluide et intuitif."
+              },
+              {
+                "id": "GAME-006",
+                "name": "Système d'incantation principale",
+                "category": "GAME",
+                "priority": 7,
+                "status": "TODO",
+                "estimatedTime": "8h",
+                "dependencies": ["GAME-002", "GAME-004", "GAME-005"],
+                "shortDescription": "Gestion de l'incantation principale et des factions",
+                "detailedDescription": [
+                  "Système de progression de l'incantation",
+                  "Gestion des factions secrètes",
+                  "Actions pour/contre l'incantation",
+                  "Effets sur le monde de jeu",
+                  "Système de révélation des factions",
+                  "Événements liés à l'incantation",
+                  "Interface de suivi de progression"
+                ],
+                "technicalRequirements": {
+                  "frameworks": ["Vue 3", "Vuex 4"],
+                  "patterns": ["Observer pattern", "State management"],
+                  "animations": ["Progress animations"]
+                },
+                "prompt": "Crée le système d'incantation principale qui est au cœur du jeu. Je veux voir la gestion des factions secrètes, la progression de l'incantation, et comment les actions des joueurs influencent cette progression. Inclus les événements spéciaux et les effets sur le monde de jeu."
+              },
+              {
+                "id": "GAME-007",
+                "name": "Système de victoire et défaite",
+                "category": "GAME",
+                "priority": 8,
+                "status": "TODO",
+                "estimatedTime": "6h",
+                "dependencies": ["GAME-005", "GAME-006"],
+                "shortDescription": "Implémentation des conditions de victoire/défaite",
+                "detailedDescription": [
+                  "Vérification des conditions de victoire",
+                  "Calcul des scores finaux",
+                  "Écran de fin de partie",
+                  "Statistiques de partie",
+                  "Système de récompenses",
+                  "Animation de victoire/défaite",
+                  "Gestion de fin de partie"
+                ],
+                "technicalRequirements": {
+                  "frameworks": ["Vue 3", "Vuex 4", "Socket.io"],
+                  "patterns": ["State machine", "Observer pattern"]
+                },
+                "prompt": "Implémente le système de victoire et défaite. Je veux voir toutes les conditions de fin de partie, le calcul des scores, l'affichage des statistiques et les animations de fin. Assure-toi que la fin de partie est synchronisée entre tous les joueurs."
+              },
+              {
+                "id": "UI-002",
+                "name": "Effets visuels et animations",
+                "category": "UI",
+                "priority": 8,
+                "status": "TODO",
+                "estimatedTime": "10h",
+                "dependencies": ["UI-001", "GAME-005"],
+                "shortDescription": "Création des effets visuels et animations du jeu",
+                "detailedDescription": [
+                  "Animations de sorts",
+                  "Effets particules",
+                  "Transitions entre les états",
+                  "Animations de cartes",
+                  "Effets de feedback utilisateur",
+                  "Animations de plateau",
+                  "Effets spéciaux d'incantation"
+                ],
+                "technicalRequirements": {
+                  "frameworks": ["Vue 3", "GSAP"],
+                  "technologies": ["CSS Animations", "SVG Animations", "Canvas"],
+                  "patterns": ["Animation composition"]
+                },
+                "prompt": "Crée un système complet d'effets visuels et d'animations pour le jeu. Je veux voir des animations fluides pour les sorts, les déplacements, les combats et les événements spéciaux. Utilise GSAP pour les animations complexes et assure-toi que les performances sont optimisées."
+              },
+              {
+                "id": "GAME-008",
+                "name": "Système de sauvegarde et persistance",
+                "category": "GAME",
+                "priority": 9,
+                "status": "TODO",
+                "estimatedTime": "6h",
+                "dependencies": ["GAME-002", "GAME-006"],
+                "shortDescription": "Implémentation de la sauvegarde et persistance des données",
+                "detailedDescription": [
+                  "Sauvegarde de l'état du jeu",
+                  "Persistance des données joueur",
+                  "Système de reprise de partie",
+                  "Gestion des déconnexions",
+                  "Synchronisation des données",
+                  "Historique des parties",
+                  "Backup automatique"
+                ],
+                "technicalRequirements": {
+                  "frameworks": ["Vuex 4", "Socket.io"],
+                  "storage": ["LocalStorage", "IndexedDB"],
+                  "patterns": ["Repository pattern", "Data persistence"]
+                },
+                "prompt": "Implémente le système de sauvegarde et de persistance des données. Je veux voir comment les données du jeu sont sauvegardées, comment gérer les déconnexions et reprises de partie, et comment synchroniser les données entre les joueurs. Utilise une combinaison de stockage local et de synchronisation serveur."
+              },
+              {
+                "id": "NETWORK-002",
+                "name": "Système de chat et communication",
+                "category": "Network",
+                "priority": 9,
+                "status": "TODO",
+                "estimatedTime": "8h",
+                "dependencies": ["NETWORK-001", "GAME-002"],
+                "shortDescription": "Implémentation du système de chat et communication entre joueurs",
+                "detailedDescription": [
+                  "Chat général",
+                  "Chat de faction (privé)",
+                  "Système d'emotes",
+                  "Notifications de jeu",
+                  "Messages système",
+                  "Historique des messages",
+                  "Filtrage de contenu",
+                  "Indicateurs de présence"
+                ],
+                "technicalRequirements": {
+                  "frameworks": ["Vue 3", "Socket.io", "Vuex 4"],
+                  "patterns": ["Pub/Sub pattern", "Message queue"],
+                  "security": ["Content filtering", "Rate limiting"]
+                },
+                "prompt": "Implémente un système de chat complet avec support pour les messages généraux et de faction. Je veux voir la gestion des messages en temps réel, l'historique, les notifications et les émotes. Assure-toi que le système est sécurisé et performant."
+              },
+              {
+                "id": "PERF-001",
+                "name": "Optimisations de performance",
+                "category": "Performance",
+                "priority": 10,
+                "status": "TODO",
+                "estimatedTime": "12h",
+                "dependencies": ["GAME-005", "GAME-006", "UI-002"],
+                "shortDescription": "Optimisation des performances générales du jeu",
+                "detailedDescription": [
+                  "Lazy loading des composants",
+                  "Optimisation des animations",
+                  "Mise en cache des assets",
+                  "Compression des données",
+                  "Optimisation des requêtes WebSocket",
+                  "Gestion de la mémoire",
+                  "Optimisation du rendu",
+                  "Profiling et monitoring"
+                ],
+                "technicalRequirements": {
+                  "tools": ["Vue DevTools", "Chrome DevTools", "Lighthouse"],
+                  "patterns": ["Virtual scrolling", "Memoization"],
+                  "technologies": ["Web Workers", "Service Workers"]
+                },
+                "prompt": "Optimise les performances globales du jeu. Je veux voir l'implémentation du lazy loading, l'optimisation des animations, la gestion de la mémoire et la mise en cache. Fournis des métriques de performance avant/après."
+              },
+              {
+                "id": "TEST-001",
+                "name": "Tests et débogage",
+                "category": "Testing",
+                "priority": 10,
+                "status": "TODO",
+                "estimatedTime": "16h",
+                "dependencies": ["GAME-007", "PERF-001"],
+                "shortDescription": "Mise en place des tests et outils de débogage",
+                "detailedDescription": [
+                  "Tests unitaires",
+                  "Tests d'intégration",
+                  "Tests E2E",
+                  "Tests de performance",
+                  "Outils de débogage",
+                  "Logging système",
+                  "Monitoring d'erreurs",
+                  "Tests de charge WebSocket"
+                ],
+                "technicalRequirements": {
+                  "frameworks": ["Jest", "Vue Test Utils", "Cypress"],
+                  "tools": ["Vue DevTools", "Socket.io Debug"],
+                  "patterns": ["TDD", "BDD"]
+                },
+                "prompt": "Mets en place une suite de tests complète pour le jeu. Je veux voir des tests unitaires pour les composants critiques, des tests d'intégration pour les fonctionnalités principales, et des tests E2E pour les scénarios de jeu complets. Inclus également un système de logging et monitoring."
+              },
+              {
+                "id": "DEPLOY-001",
+                "name": "Configuration du déploiement",
+                "category": "Deployment",
+                "priority": 11,
+                "status": "TODO",
+                "estimatedTime": "8h",
+                "dependencies": ["PERF-001", "TEST-001"],
+                "shortDescription": "Mise en place du système de déploiement",
+                "detailedDescription": [
+                  "Configuration Docker",
+                  "Scripts de build",
+                  "Configuration CI/CD",
+                  "Environnements de déploiement",
+                  "Monitoring production",
+                  "Backup système",
+                  "Gestion des versions",
+                  "Documentation déploiement"
+                ],
+                "technicalRequirements": {
+                  "tools": ["Docker", "GitHub Actions", "Nginx"],
+                  "monitoring": ["Sentry", "Analytics"],
+                  "hosting": ["Cloud provider setup"]
+                },
+                "prompt": "Configure le système de déploiement complet. Je veux voir la configuration Docker, les pipelines CI/CD, le monitoring de production et la documentation de déploiement. Assure-toi que le système est scalable et sécurisé."
+              },
+              {
+                "id": "DOC-001",
+                "name": "Documentation technique",
+                "category": "Documentation",
+                "priority": 11,
+                "status": "TODO",
+                "estimatedTime": "10h",
+                "dependencies": ["DEPLOY-001"],
+                "shortDescription": "Création de la documentation technique complète",
+                "detailedDescription": [
+                  "Documentation API",
+                  "Documentation composants",
+                  "Guide d'installation",
+                  "Guide de déploiement",
+                  "Documentation architecture",
+                  "Guide de contribution",
+                  "Documentation utilisateur",
+                  "Changelog"
+                ],
+                "technicalRequirements": {
+                  "tools": ["VuePress", "TypeDoc", "Markdown"],
+                  "standards": ["JSDoc", "OpenAPI"],
+                  "hosting": ["GitHub Pages"]
+                },
+                "prompt": "Crée une documentation technique complète pour le projet. Je veux voir la documentation de l'API, des composants, de l'architecture, ainsi que les guides d'installation et de déploiement. Utilise VuePress pour générer un site de documentation interactif."
+              }
+        ],
+        "categories": [
+            {
+                "id": "SETUP",
+                "name": "Configuration initiale",
+                "description": "Tâches de mise en place du projet"
+            },
+            {
+                "id": "CORE",
+                "name": "Fonctionnalités principales",
+                "description": "Mécaniques de base du jeu"
+            },
+            {
+                "id": "UI",
+                "name": "Interface utilisateur",
+                "description": "Composants et design"
+            },
+            {
+                "id": "NETWORK",
+                "name": "Réseau",
+                "description": "Communication WebSocket et multijoueur"
+            },
+            {
+                "id": "GAME",
+                "name": "Logique de jeu",
+                "description": "Règles et mécaniques du jeu"
+            }
+        ],
+        "technicalStack": {
+            "frontend": {
+                "mainFramework": "Vue 3",
+                "language": "TypeScript",
+                "stateManagement": "Vuex 4",
+                "routing": "Vue Router",
+                "networking": "Socket.io-client"
+            },
+            "backend": {
+                "server": "Node.js",
+                "websocket": "Socket.io",
+                "database": "MongoDB"
+            }
+        }
+    }
+}
