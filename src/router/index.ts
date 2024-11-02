@@ -3,6 +3,8 @@ import Home from '@/views/Home.vue';
 import CharacterSelectionView from '@/views/CharacterSelectionView.vue';
 import Game from '@/views/Game.vue';
 import { useCharactersStore } from '@/store/modules/characters';
+import Task from '@/components/Task.vue';
+import Gantt from '@/components/Gantt.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,6 +18,16 @@ const router = createRouter({
       path: '/character-selection',
       name: 'character-selection',
       component: CharacterSelectionView
+    },
+    {
+      path: '/tasks',
+      name: 'tasks',
+      component: Task
+    },
+    {
+      path: '/gantt',
+      name: 'gantt',
+      component: Gantt
     },
     {
       path: '/game',

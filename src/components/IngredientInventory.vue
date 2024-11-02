@@ -1,6 +1,6 @@
 <template>
   <div class="ingredient-inventory">
-    <h3>{{ playerName }}</h3>
+    <h3>Sacoche à ingrédients 🌿</h3>
     <div class="ingredients-grid">
       <div 
         v-for="i in 8" 

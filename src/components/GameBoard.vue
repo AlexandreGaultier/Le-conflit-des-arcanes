@@ -140,6 +140,7 @@ defineExpose({
 .game-board {
   display: grid;
   gap: 4px;
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
   background: #2c3e50;
   padding: 8px;
   border-radius: 8px;

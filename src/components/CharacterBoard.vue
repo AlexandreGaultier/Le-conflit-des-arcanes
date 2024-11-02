@@ -99,6 +99,7 @@ const getClassName = (characterClass: CharacterClass): string => {
 <style scoped lang="scss">
 .character-board {
   background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
   border-radius: 12px;
   padding: 1.5rem;
   width: 100%;
