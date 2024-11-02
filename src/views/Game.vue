@@ -1,10 +1,12 @@
 <template>
   <div class="game-container">
     <div class="game-content">
-      <div class="player-board">
+      <div class="player-boards">
         <CharacterBoard 
-          v-if="currentCharacter"
-          :character="currentCharacter"
+          v-for="character in characters"
+          :key="character.id"
+          :character="character"
+          :class="{ 'active': character.id === currentCharacter?.id }"
         />
       </div>
 
@@ -26,6 +28,7 @@ const boardSize = ref<8 | 10>(8)
 const gameBoard = ref()
 const charactersStore = useCharactersStore()
 
+const characters = computed(() => charactersStore.characters)
 const currentCharacter = computed(() => charactersStore.selectedCharacter)
 </script>
 
@@ -43,9 +46,17 @@ const currentCharacter = computed(() => charactersStore.selectedCharacter)
   height: 100%;
 }
 
-.player-board {
+.player-boards {
   width: 350px;
   min-width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.active {
+  border: 2px solid #42b883;
+  border-radius: 12px;
 }
 
 @media (max-width: 1200px) {
@@ -53,7 +64,7 @@ const currentCharacter = computed(() => charactersStore.selectedCharacter)
     flex-direction: column;
   }
 
-  .player-board {
+  .player-boards {
     width: 100%;
     min-width: 0;
   }
