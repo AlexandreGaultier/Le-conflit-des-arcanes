@@ -57,6 +57,13 @@ export const useTurnsStore = defineStore('turns', {
       this.phase = TurnPhase.START
       this.actionsLeft = 3
       this.turnNumber = 1
+
+      const charactersStore = useCharactersStore()
+      if (this.currentPlayerId) {
+        charactersStore.selectCharacter(this.currentPlayerId)
+        console.log('Personnage sélectionné:', this.currentPlayerId)
+      }
+
       return { diceResult, startingPlayer }
     },
 

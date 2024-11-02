@@ -3,17 +3,7 @@ import { Character, CharacterClass, CHARACTER_STATS } from '@/types/CharacterTyp
 
 interface CharactersState {
   characters: Character[];
-  selectedCharacter: Character | null;
-}
-
-interface InitialPosition {
-  player1: { x: number; y: number };
-  player2: { x: number; y: number };
-}
-
-const INITIAL_POSITIONS: InitialPosition = {
-  player1: { x: 0, y: 0 }, // Côté gauche du plateau
-  player2: { x: 7, y: 7 }  // Côté droit du plateau
+  selectedCharacterId: string | null;
 }
 
 const DEFAULT_NAMES = {
@@ -26,8 +16,16 @@ const DEFAULT_NAMES = {
 export const useCharactersStore = defineStore('characters', {
   state: (): CharactersState => ({
     characters: [],
-    selectedCharacter: null
+    selectedCharacterId: null
   }),
+
+  getters: {
+    selectedCharacter: (state) => {
+      console.log('Selected character ID:', state.selectedCharacterId)
+      console.log('All characters:', state.characters)
+      return state.characters.find(c => c.id === state.selectedCharacterId)
+    }
+  },
 
   actions: {
     createCharacter(characterClass: CharacterClass, name?: string) {
@@ -41,7 +39,8 @@ export const useCharactersStore = defineStore('characters', {
         movement: CHARACTER_STATS[characterClass].movement,
         spells: CHARACTER_STATS[characterClass].spells,
         level: 1,
-        experience: 0
+        experience: 0,
+        position: undefined
       }
       
       this.characters.push(character)
@@ -49,7 +48,8 @@ export const useCharactersStore = defineStore('characters', {
     },
 
     selectCharacter(characterId: string) {
-      this.selectedCharacter = this.characters.find(c => c.id === characterId) || null
+      console.log('Selecting character:', characterId)
+      this.selectedCharacterId = characterId
     },
 
     updatePosition(characterId: string, x: number, y: number) {
@@ -74,9 +74,24 @@ export const useCharactersStore = defineStore('characters', {
     },
 
     initializePositions() {
-      // Positionne les personnages à leurs positions de départ
-      this.characters[0].position = INITIAL_POSITIONS.player1
-      this.characters[1].position = INITIAL_POSITIONS.player2
+      if (this.characters.length >= 2) {
+        // Premier joueur en haut à gauche
+        this.characters[0].position = { x: 0, y: 0 }
+        // Deuxième joueur en bas à droite
+        this.characters[1].position = { x: 7, y: 7 }
+        
+        console.log('Positions initialisées:', {
+          player1: this.characters[0].position,
+          player2: this.characters[1].position
+        })
+      }
+    },
+
+    moveCharacter(characterId: string, newPosition: { x: number, y: number }) {
+      const character = this.characters.find(c => c.id === characterId)
+      if (character) {
+        character.position = newPosition
+      }
     }
   }
 }) 

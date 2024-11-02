@@ -7,24 +7,30 @@
         class="board-cell"
         :class="[
           cell.type,
-          { 'has-character': getCharacterAtPosition(cell.x, cell.y) }
+          { 
+            'has-character': getCharacterAtPosition(cell.x, cell.y),
+            'movable': isMovableCell(cell.x, cell.y),
+            'disabled': !isMovableCell(cell.x, cell.y) && !getCharacterAtPosition(cell.x, cell.y)
+          }
         ]"
         @click="handleCellClick(cell)"
       >
-        <template v-if="getCharacterAtPosition(cell.x, cell.y)">
-          <div class="character-token" :class="{ 
-            'active': getCharacterAtPosition(cell.x, cell.y)?.id === currentCharacter?.id 
-          }">
-            {{ getClassEmoji(getCharacterAtPosition(cell.x, cell.y)?.class) }}
-          </div>
-        </template>
-        <template v-else>
-          {{ cell.content?.emoji }}
-          <div class="cell-coordinates">{{ cell.x }},{{ cell.y }}</div>
+        {{ cell.content?.emoji }}
+        <div class="cell-coordinates">{{ cell.x }},{{ cell.y }}</div>
         <div v-if="cell.content" class="cell-content">
           {{ cell.content.name }}
         </div>
-        </template>
+        
+        <div 
+          v-if="getCharacterAtPosition(cell.x, cell.y)"
+          class="character-token"
+          :class="[
+            getCharacterClass(getCharacterAtPosition(cell.x, cell.y)?.class),
+            { 'active': getCharacterAtPosition(cell.x, cell.y)?.id === currentCharacter?.id }
+          ]"
+        >
+          {{ getClassEmoji(getCharacterAtPosition(cell.x, cell.y)?.class) }}
+        </div>
       </div>
     </div>
     <div 
@@ -39,110 +45,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { BoardGenerator } from '@/services/BoardGenerator'
-import type { Cell } from '@/types/GameTypes'
-import { useIngredientsStore } from '@/store/modules/ingredients'
-import { IngredientType } from '@/types/IngredientTypes'
-import { CellType } from '@/types/GameTypes'
+import { ref, computed } from 'vue'
 import { useCharactersStore } from '@/store/modules/characters'
+import { useTurnsStore } from '@/store/modules/turns'
 import { CharacterClass } from '@/types/CharacterTypes'
-
-const props = defineProps<{
-  size: 8 | 10
-}>()
-
-const board = ref<Cell[][]>([])
-const generator = new BoardGenerator()
-const ingredientsStore = useIngredientsStore()
-const particles = ref<Array<{id: number, type: IngredientType, style: any}>>([])
-let particleId = 0
-
-const boardStyle = computed(() => ({
-  gridTemplateColumns: `repeat(${props.size}, 1fr)`
-}))
-
-const regenerateBoard = () => {
-  board.value = generator.generateBoard(props.size)
-}
-
-const getIngredientEmoji = (type: IngredientType): string => {
-  const emojis = {
-    [IngredientType.CRYSTAL]: '💎',
-    [IngredientType.HERB]: '🌿',
-    [IngredientType.MUSHROOM]: '🍄',
-    [IngredientType.ROOT]: '🌱',
-    [IngredientType.FLOWER]: '🌸',
-    [IngredientType.ESSENCE]: '✨',
-    [IngredientType.POWDER]: '⚗️',
-    [IngredientType.GEM]: '💠'
-  }
-  return emojis[type] || '✨'
-}
-
-const createCollectEffect = (cell: Cell, event: MouseEvent) => {
-  // Position de départ (position du clic)
-  const startX = event.clientX
-  const startY = event.clientY
-  
-  // Position finale (position de la sacoche - à ajuster selon votre layout)
-  const inventoryEl = document.querySelector('.ingredient-inventory')
-  if (!inventoryEl) return
-  
-  const inventoryRect = inventoryEl.getBoundingClientRect()
-  const endX = inventoryRect.left + inventoryRect.width / 2
-  const endY = inventoryRect.top + inventoryRect.height / 2
-
-  // Créer 5 particules
-  for (let i = 0; i < 5; i++) {
-    const particle = {
-      id: particleId++,
-      type: cell.content.type,
-      emoji: cell.content.emoji || getIngredientEmoji(cell.content.type),
-      style: {
-        position: 'fixed',
-        left: `${startX}px`,
-        top: `${startY}px`,
-        transform: 'translate(-50%, -50%)',
-        transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-        opacity: 1,
-        zIndex: 1000
-      }
-    }
-    
-    particles.value.push(particle)
-
-    // Ajouter un petit délai aléatoire pour chaque particule
-    setTimeout(() => {
-      particle.style.left = `${endX}px`
-      particle.style.top = `${endY}px`
-      particle.style.opacity = 0
-      
-      // Supprimer la particule après l'animation
-      setTimeout(() => {
-        particles.value = particles.value.filter(p => p.id !== particle.id)
-      }, 500)
-    }, i * 100)
-  }
-}
-
-const hasCollectedThisTurn = ref(false)
-
-const handleCellClick = (cell: Cell, event: MouseEvent) => {
-  if (cell.type === CellType.INGREDIENT && cell.content && !hasCollectedThisTurn.value) {
-    ingredientsStore.collectIngredient(1, cell.content)
-    createCollectEffect(cell, event)
-    hasCollectedThisTurn.value = true
-  }
-}
-
-// Cette fonction sera appelée quand le système de tours sera implémenté
-const resetTurn = () => {
-  hasCollectedThisTurn.value = false
-}
+import { CellType } from '@/types/GameTypes'
+import type { Cell } from '@/types/GameTypes'
 
 const charactersStore = useCharactersStore()
-const currentCharacter = computed(() => charactersStore.selectedCharacter)
+const turnsStore = useTurnsStore()
+
+// Définition des props
+const props = defineProps<{
+  board: Cell[][]
+}>()
+
+// Style du plateau
+const boardStyle = computed(() => ({
+  gridTemplateColumns: `repeat(${props.board[0]?.length || 8}, 1fr)`,
+  gridTemplateRows: `repeat(${props.board.length || 8}, 1fr)`
+}))
+
+// Récupération du personnage actif
+const currentCharacter = computed(() => {
+  const currentId = turnsStore.currentPlayerId
+  console.log('Current Player ID:', currentId)
+  console.log('All characters:', charactersStore.characters)
+  
+  if (!currentId) return null
+  
+  const character = charactersStore.characters.find(c => c.id === currentId)
+  console.log('Found character:', character)
+  return character
+})
 
 const getCharacterAtPosition = (x: number, y: number) => {
   return charactersStore.characters.find(char => 
@@ -157,15 +92,65 @@ const getClassEmoji = (characterClass: CharacterClass): string => {
     [CharacterClass.ENCHANTER]: '✨',
     [CharacterClass.ALCHEMIST]: '⚗️'
   }
-  return emojis[characterClass]
+  return emojis[characterClass] || ''
 }
 
-onMounted(() => {
-  regenerateBoard()
-})
+const getCharacterClass = (characterClass: CharacterClass | undefined): string => {
+  return characterClass?.toLowerCase() || ''
+}
+
+const isMovableCell = (x: number, y: number): boolean => {
+  console.log('Checking movable cell:', { x, y })
+  console.log('Current character:', currentCharacter.value)
+  
+  if (!currentCharacter.value) {
+    console.log('Pas de personnage actif')
+    return false
+  }
+
+  if (!currentCharacter.value.position) {
+    console.log('Position du personnage non définie:', currentCharacter.value)
+    return false
+  }
+
+  if (!turnsStore.canPerformAction) {
+    console.log('Pas d\'actions disponibles')
+    return false
+  }
+
+  const { x: currentX, y: currentY } = currentCharacter.value.position
+  const distance = Math.abs(x - currentX) + Math.abs(y - currentY)
+  const canMove = distance <= currentCharacter.value.movement && distance > 0 && !getCharacterAtPosition(x, y)
+
+  console.log('Vérification du mouvement:', {
+    currentPosition: currentCharacter.value.position,
+    targetPosition: { x, y },
+    distance,
+    movement: currentCharacter.value.movement,
+    canMove
+  })
+
+  return canMove
+}
+
+const handleCellClick = (cell: Cell) => {
+  if (isMovableCell(cell.x, cell.y)) {
+    moveCharacter(cell.x, cell.y)
+  }
+}
+
+const moveCharacter = (x: number, y: number) => {
+  if (currentCharacter.value && turnsStore.useAction(1)) {
+    charactersStore.moveCharacter(currentCharacter.value.id, { x, y })
+  }
+}
+
+const resetTurn = () => {
+  // Reset logic here
+}
 
 defineExpose({
-  regenerateBoard,
+  regenerateBoard: () => {}, // Add your regenerateBoard logic here
   resetTurn
 })
 </script>
@@ -173,46 +158,54 @@ defineExpose({
 <style scoped lang="scss">
 .game-board {
   display: grid;
-  gap: 4px;
-  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
-  background: #2c3e50;
-  padding: 8px;
-  border-radius: 8px;
-  max-width: 800px;
-  margin: 0 auto;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  padding: 4px;
+}
+
+.board-row {
+  display: contents;
 }
 
 .board-cell {
   aspect-ratio: 1;
-  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem;
+  font-size: 0.65rem;
+  min-height: 0;
+  background: rgba(40, 40, 40, 0.8);
   border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0.5rem;
-  text-align: center;
-}
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(60, 60, 60, 0.8);
+    transform: scale(1.02);
+    box-shadow: 0 0 8px rgba(66, 184, 131, 0.3);
+  }
 
-.board-cell:hover {
-  transform: scale(1.05);
-  z-index: 1;
+  &.movable {
+    border-color: rgba(66, 184, 131, 0.5);
+    
+    &:hover {
+      background: rgba(66, 184, 131, 0.2);
+      box-shadow: 0 0 12px rgba(66, 184, 131, 0.4);
+    }
+  }
 }
 
 .cell-coordinates {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.45rem;
+  opacity: 0.4;
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .cell-content {
-  margin-top: 0.5rem;
-  font-size: 0.7rem;
-  text-align: center;
-  word-break: break-word;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Types de cellules */
@@ -298,18 +291,6 @@ defineExpose({
   animation: spawnPulse 2s infinite ease-in-out;
 }
 
-/* Ajout d'une ligne de symétrie visuelle */
-.game-board::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  height: 100%;
-  width: 2px;
-  background: rgba(255, 255, 255, 0.1);
-  pointer-events: none;
-}
-
 .dense_wood {
   background: rgba(101, 67, 33, 0.5) !important;
   border: 2px solid rgba(101, 67, 33, 0.8) !important;
@@ -373,6 +354,8 @@ defineExpose({
   justify-content: center;
   font-size: 1.2rem;
   z-index: 2;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   
   &.elementalist {
     background: rgba(239, 68, 68, 0.8);
@@ -396,15 +379,74 @@ defineExpose({
 
   &.active {
     transform: scale(1.1);
-    box-shadow: 0 0 15px #42b883;
+    box-shadow: 0 0 12px rgba(66, 184, 131, 0.6);
   }
 }
 
 .board-cell {
   position: relative;
+  transition: all 0.3s ease;
   
+  &.movable {
+    border: 2px dashed #42b883;
+    cursor: pointer;
+    
+    &:hover {
+      background: rgba(66, 184, 131, 0.2);
+      transform: scale(1.05);
+    }
+
+    &::after {
+      content: '•';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #42b883;
+      font-size: 2rem;
+      opacity: 0.5;
+    }
+  }
+  
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    
+    &:hover {
+      background: none;
+    }
+  }
+
   &.has-character {
-    background: rgba(66, 184, 131, 0.1);
+    border: none;
+    
+    &::after {
+      display: none;
+    }
+  }
+}
+
+.movable {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2px dashed #42b883;
+    border-radius: 4px;
+    animation: borderDash 1s linear infinite;
+  }
+}
+
+@keyframes borderDash {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+.board-cell {
+  &.movable:hover {
+    background: rgba(66, 184, 131, 0.2);
+    cursor: pointer;
   }
 }
 </style> 
