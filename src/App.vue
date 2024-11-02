@@ -45,7 +45,6 @@ nav a.router-link-active {
 
 main {
   flex: 1;
-  padding: 2rem;
 }
 
 .nav-menu {

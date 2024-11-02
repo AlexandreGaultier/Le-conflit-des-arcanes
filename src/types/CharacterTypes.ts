@@ -1,3 +1,6 @@
+import type { Position } from './GameTypes'
+import type { InventoryItem } from '@/store/modules/characters'
+
 export enum CharacterClass {
   ELEMENTALIST = 'elementalist',
   NECROMANCER = 'necromancer',
@@ -32,15 +35,13 @@ export interface Spell {
 
 export interface Character {
   id: string;
-  class: CharacterClass;
   name: string;
-  hp: number;
-  maxHp: number;
+  class: CharacterClass;
+  position: Position | null;
   movement: number;
-  spells: Spell[];
-  position?: { x: number; y: number };
-  level: number;
-  experience: number;
+  maxHealth: number;
+  currentHealth: number;
+  inventory: InventoryItem[];
 }
 
 export const CHARACTER_STATS = {

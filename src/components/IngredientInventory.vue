@@ -46,8 +46,14 @@ const canUseForSpell = (ingredient: IngredientType): boolean => {
 }
 
 const getIngredientEmoji = (type: IngredientType): string => {
-  // Implement your logic here to get the emoji for the ingredient type
-  return '🌿'
+  const emojis: Record<IngredientType, string> = {
+    [IngredientType.PLUME_PHENIX]: '🪶',
+    [IngredientType.POUDRE_FEE]: '✨',
+    [IngredientType.RACINE_ANCIENNE]: '🌱',
+    [IngredientType.BAIE_ENCHANTEE]: '🫐',
+    // ... ajoutez les autres types
+  }
+  return emojis[type] || '🌿'
 }
 </script>
 

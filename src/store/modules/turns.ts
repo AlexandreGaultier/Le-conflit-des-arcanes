@@ -10,10 +10,12 @@ export const useTurnsStore = defineStore('turns', {
     turnNumber: 1,
     activeEffects: [],
     diceRollResult: null as number | null,
-    startingPlayer: null as string | null
+    startingPlayer: null as string | null,
+    hasMovedThisTurn: false
   }),
 
   getters: {
+    canMove: (state) => state.phase === TurnPhase.ACTION && !state.hasMovedThisTurn,
     canPerformAction(): boolean {
       return this.phase === TurnPhase.ACTION && this.actionsLeft > 0
     },
@@ -54,9 +56,10 @@ export const useTurnsStore = defineStore('turns', {
 
     startGame() {
       const { diceResult, startingPlayer } = this.rollDiceForStart()
-      this.phase = TurnPhase.START
+      this.phase = TurnPhase.ACTION
       this.actionsLeft = 3
       this.turnNumber = 1
+      this.hasMovedThisTurn = false
 
       const charactersStore = useCharactersStore()
       if (this.currentPlayerId) {
@@ -79,37 +82,44 @@ export const useTurnsStore = defineStore('turns', {
       this.phase = TurnPhase.ACTION
     },
 
-    useAction(cost: number = 1) {
-      if (this.canPerformAction && this.actionsLeft >= cost) {
+    useAction(cost: number = 1): boolean {
+      if (this.actionsLeft >= cost) {
         this.actionsLeft -= cost
-        if (this.actionsLeft === 0) {
-          this.phase = TurnPhase.END
-        }
+        console.log(`Action utilisée. Actions restantes: ${this.actionsLeft}`)
+        return true
+      }
+      return false
+    },
+
+    useMovement() {
+      if (this.canMove) {
+        this.hasMovedThisTurn = true
         return true
       }
       return false
     },
 
     endTurn() {
-      // Appliquer les effets de fin de tour
-      this.activeEffects.forEach((effect, index) => {
-        if (effect.type === 'end') {
-          effect.effect()
-        }
-        effect.duration--
-        if (effect.duration <= 0) {
-          this.activeEffects.splice(index, 1)
-        }
-      })
+      // Réinitialiser pour le prochain joueur
+      this.actionsLeft = 3
+      this.hasMovedThisTurn = false
 
+      // Changer de joueur
       const charactersStore = useCharactersStore()
-      const currentIndex = charactersStore.characters.findIndex(c => c.id === this.currentPlayerId)
-      const nextIndex = (currentIndex + 1) % charactersStore.characters.length
-      this.currentPlayerId = charactersStore.characters[nextIndex].id
+      const characters = charactersStore.characters
+      const currentIndex = characters.findIndex(c => c.id === this.currentPlayerId)
+      const nextIndex = (currentIndex + 1) % characters.length
+      this.currentPlayerId = characters[nextIndex].id
+
+      // Sélectionner le nouveau joueur
       charactersStore.selectCharacter(this.currentPlayerId)
-      
-      this.turnNumber++
-      this.startTurn()
+
+      // Incrémenter le numéro du tour si on revient au premier joueur
+      if (nextIndex === 0) {
+        this.turnNumber++
+      }
+
+      console.log('Tour terminé, au joueur suivant:', this.currentPlayerId)
     },
 
     addEffect(effect: { id: string; type: string; duration: number; effect: () => void }) {

@@ -29,15 +29,18 @@
           v-for="i in 3" 
           :key="i"
           class="action-point"
-          :class="{ 'used': i > turnStore.actionsLeft }"
+          :class="{ 
+            'used': i > turnStore.actionsLeft,
+            'available': i <= turnStore.actionsLeft 
+          }"
         />
       </div>
       <button 
         class="end-turn-button"
         @click="turnStore.endTurn()"
-        :disabled="turnStore.actionsLeft > 0 && turnStore.phase === TurnPhase.ACTION"
+        :disabled="!canEndTurn"
       >
-        Fin du tour
+        {{ endTurnButtonText }}
       </button>
     </div>
 
@@ -84,6 +87,17 @@ const isPhaseCompleted = (phase: TurnPhase): boolean => {
   const phaseIndex = phases.indexOf(phase)
   return phaseIndex < currentPhaseIndex
 }
+
+const canEndTurn = computed(() => {
+  return turnStore.phase === TurnPhase.ACTION
+})
+
+const endTurnButtonText = computed(() => {
+  if (turnStore.actionsLeft > 0) {
+    return 'Passer le tour'
+  }
+  return 'Fin du tour'
+})
 </script>
 
 <style scoped lang="scss">
@@ -166,6 +180,37 @@ const isPhaseCompleted = (phase: TurnPhase): boolean => {
   width: 20px;
   height: 20px;
   border-radius: 50%;
+  transition: all 0.3s ease;
+
+  &.available {
+    background: #42b883;
+    box-shadow: 0 0 8px rgba(66, 184, 131, 0.4);
+  }
+
+  &.used {
+    background: rgba(66, 184, 131, 0.2);
+  }
+}
+
+.end-turn-button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
   background: #42b883;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+
+  &:hover:not(:disabled) {
+    background: #3aa876;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 </style> 

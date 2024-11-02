@@ -10,7 +10,8 @@
           { 
             'has-character': getCharacterAtPosition(cell.x, cell.y),
             'movable': isMovableCell(cell.x, cell.y),
-            'disabled': !isMovableCell(cell.x, cell.y) && !getCharacterAtPosition(cell.x, cell.y)
+            'disabled': !isMovableCell(cell.x, cell.y) && !getCharacterAtPosition(cell.x, cell.y),
+            'collectable': canCollectIngredient(cell)
           }
         ]"
         @click="handleCellClick(cell)"
@@ -48,9 +49,11 @@
 import { ref, computed } from 'vue'
 import { useCharactersStore } from '@/store/modules/characters'
 import { useTurnsStore } from '@/store/modules/turns'
+import { useIngredientsStore } from '@/store/modules/ingredients'
 import { CharacterClass } from '@/types/CharacterTypes'
 import { CellType } from '@/types/GameTypes'
 import type { Cell } from '@/types/GameTypes'
+import { IngredientType } from '@/types/IngredientTypes'
 
 const charactersStore = useCharactersStore()
 const turnsStore = useTurnsStore()
@@ -69,13 +72,10 @@ const boardStyle = computed(() => ({
 // Récupération du personnage actif
 const currentCharacter = computed(() => {
   const currentId = turnsStore.currentPlayerId
-  console.log('Current Player ID:', currentId)
-  console.log('All characters:', charactersStore.characters)
   
   if (!currentId) return null
   
   const character = charactersStore.characters.find(c => c.id === currentId)
-  console.log('Found character:', character)
   return character
 })
 
@@ -100,47 +100,103 @@ const getCharacterClass = (characterClass: CharacterClass | undefined): string =
 }
 
 const isMovableCell = (x: number, y: number): boolean => {
-  console.log('Checking movable cell:', { x, y })
-  console.log('Current character:', currentCharacter.value)
-  
   if (!currentCharacter.value) {
     console.log('Pas de personnage actif')
     return false
   }
 
-  if (!currentCharacter.value.position) {
-    console.log('Position du personnage non définie:', currentCharacter.value)
+  if (!turnsStore.canMove) {
+    // console.log('Déplacement déjà effectué ce tour')
     return false
   }
 
-  if (!turnsStore.canPerformAction) {
-    console.log('Pas d\'actions disponibles')
+  if (!currentCharacter.value.position) {
+    console.log('Position du personnage non définie')
     return false
   }
 
   const { x: currentX, y: currentY } = currentCharacter.value.position
   const distance = Math.abs(x - currentX) + Math.abs(y - currentY)
-  const canMove = distance <= currentCharacter.value.movement && distance > 0 && !getCharacterAtPosition(x, y)
-
-  console.log('Vérification du mouvement:', {
-    currentPosition: currentCharacter.value.position,
-    targetPosition: { x, y },
-    distance,
-    movement: currentCharacter.value.movement,
-    canMove
-  })
-
-  return canMove
+  
+  return distance <= currentCharacter.value.movement && 
+         distance > 0 && 
+         !getCharacterAtPosition(x, y)
 }
 
 const handleCellClick = (cell: Cell) => {
+  console.log('Clic sur la cellule:', cell)
+  
   if (isMovableCell(cell.x, cell.y)) {
     moveCharacter(cell.x, cell.y)
+  } else if (canCollectIngredient(cell)) {
+    console.log('AAAAAAAAAAAAAAAAAAAA Tentative de collecte')
+    collectIngredient(cell)
+  }
+}
+
+const canCollectIngredient = (cell: Cell): boolean => {
+  if (!currentCharacter.value?.position) return false
+  
+  const isSamePosition = 
+    currentCharacter.value.position.x === cell.x && 
+    currentCharacter.value.position.y === cell.y
+
+  const canCollect = isSamePosition && 
+                    cell.type === CellType.INGREDIENT && 
+                    turnsStore.canPerformAction
+
+//   console.log('Peut collecter ?', {
+//     isSamePosition,
+//     cellType: cell.type,
+//     isIngredient: cell.type === CellType.INGREDIENT,
+//     canAct: turnsStore.canPerformAction,
+//     result: canCollect
+//   })
+
+  return canCollect
+}
+
+const collectIngredient = (cell: Cell) => {
+  if (!currentCharacter.value || !cell.content) {
+    console.log('Impossible de collecter : personnage ou contenu manquant')
+    return
+  }
+
+  console.log('AAAAAAAAAAAAAAAAAAAAAA Tentative de récolte :', {
+    character: currentCharacter.value.name,
+    ingredient: cell.content,
+    position: { x: cell.x, y: cell.y }
+  })
+
+  if (turnsStore.useAction(1)) {
+    const ingredientsStore = useIngredientsStore()
+    
+    // Ajouter l'ingrédient
+    ingredientsStore.addIngredient(
+      currentCharacter.value.id,
+      {
+        type: cell.content.type as IngredientType,
+        quantity: 1
+      }
+    )
+
+    // Animation et nettoyage de la case
+    const cellElement = document.querySelector(`[data-x="${cell.x}"][data-y="${cell.y}"]`)
+    if (cellElement) {
+      cellElement.classList.add('collecting')
+      setTimeout(() => {
+        cellElement.classList.remove('collecting')
+        cell.type = CellType.EMPTY
+        cell.content = null
+      }, 500)
+    }
+
+    console.log('Récolte réussie ✅')
   }
 }
 
 const moveCharacter = (x: number, y: number) => {
-  if (currentCharacter.value && turnsStore.useAction(1)) {
+  if (currentCharacter.value && turnsStore.useMovement()) {
     charactersStore.moveCharacter(currentCharacter.value.id, { x, y })
   }
 }
@@ -190,6 +246,34 @@ defineExpose({
       background: rgba(66, 184, 131, 0.2);
       box-shadow: 0 0 12px rgba(66, 184, 131, 0.4);
     }
+  }
+
+  &.collecting {
+    animation: collect 0.5s ease-out;
+  }
+
+  &.collectable {
+    cursor: pointer;
+    box-shadow: inset 0 0 0 2px #42b883;
+    
+    &:hover {
+      background: rgba(66, 184, 131, 0.2);
+    }
+  }
+}
+
+@keyframes collect {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
   }
 }
 

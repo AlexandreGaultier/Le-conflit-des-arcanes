@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { Character, CharacterClass, CHARACTER_STATS } from '@/types/CharacterTypes'
+import { InventoryItem } from '../../types/IngredientTypes';
 
 interface CharactersState {
   characters: Character[];
@@ -21,8 +22,6 @@ export const useCharactersStore = defineStore('characters', {
 
   getters: {
     selectedCharacter: (state) => {
-      console.log('Selected character ID:', state.selectedCharacterId)
-      console.log('All characters:', state.characters)
       return state.characters.find(c => c.id === state.selectedCharacterId)
     }
   },
@@ -48,7 +47,6 @@ export const useCharactersStore = defineStore('characters', {
     },
 
     selectCharacter(characterId: string) {
-      console.log('Selecting character:', characterId)
       this.selectedCharacterId = characterId
     },
 
@@ -79,11 +77,6 @@ export const useCharactersStore = defineStore('characters', {
         this.characters[0].position = { x: 0, y: 0 }
         // Deuxième joueur en bas à droite
         this.characters[1].position = { x: 7, y: 7 }
-        
-        console.log('Positions initialisées:', {
-          player1: this.characters[0].position,
-          player2: this.characters[1].position
-        })
       }
     },
 
@@ -91,6 +84,23 @@ export const useCharactersStore = defineStore('characters', {
       const character = this.characters.find(c => c.id === characterId)
       if (character) {
         character.position = newPosition
+      }
+    },
+
+    addToInventory(characterId: string, item: InventoryItem) {
+      const character = this.characters.find(c => c.id === characterId)
+      if (!character) return
+
+      // Vérifier si la sacoche n'est pas pleine (max 8 emplacements)
+      if (!character.inventory) {
+        character.inventory = []
+      }
+
+      if (character.inventory.length < 8) {
+        character.inventory.push(item)
+        console.log(`${item.name} ajouté à l'inventaire de ${character.name}`)
+      } else {
+        console.log('Inventaire plein !')
       }
     }
   }

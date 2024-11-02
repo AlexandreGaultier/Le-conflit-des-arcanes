@@ -55,7 +55,6 @@ const diceResult = ref(0)
 const startingPlayer = ref('')
 
 onMounted(() => {
-  console.log('Board généré:', board.value)
   
   // 1. Initialiser les positions
   charactersStore.initializePositions()
@@ -65,12 +64,12 @@ onMounted(() => {
   diceResult.value = result
   startingPlayer.value = player
 
-  console.log('État initial:', {
-    board: board.value,
-    characters: charactersStore.characters,
-    currentPlayerId: turnsStore.currentPlayerId,
-    selectedCharacterId: charactersStore.selectedCharacterId
-  })
+//   console.log('État initial:', {
+//     board: board.value,
+//     characters: charactersStore.characters,
+//     currentPlayerId: turnsStore.currentPlayerId,
+//     selectedCharacterId: charactersStore.selectedCharacterId
+//   })
 })
 </script>
 
