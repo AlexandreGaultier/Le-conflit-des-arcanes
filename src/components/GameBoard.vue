@@ -153,7 +153,7 @@ const collectIngredient = (cell: Cell) => {
   // Normalisation du type (suppression des accents et espaces)
   const normalizedType = cell.content.name
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Supprime les accents
+    // .replace(/[\u0300-\u036f]/g, '') // Supprime les accents
     .toUpperCase()
     .replace(/ /g, '_') as IngredientType
 

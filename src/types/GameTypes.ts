@@ -1,7 +1,7 @@
 export enum CellType {
   EMPTY = 'empty',
   INGREDIENT = 'ingredient',
-  OBJECT = 'object',
+  OBSTACLE = 'obstacle',
   MONSTER = 'monster',
   SPECIAL = 'special',
   SPAWN = 'spawn',
@@ -12,11 +12,6 @@ export interface Cell {
   type: CellType;
   x: number;
   y: number;
-  content?: {
-    id: string;
-    name: string;
-    variant: number;
-  };
 }
 
 export interface BoardConfig {
