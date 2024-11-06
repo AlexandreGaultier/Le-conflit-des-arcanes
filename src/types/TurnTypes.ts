@@ -9,10 +9,13 @@ export interface TurnState {
   phase: TurnPhase;
   actionsLeft: number;
   turnNumber: number;
-  activeEffects: {
+  diceRollResult: number | null;
+  startingPlayer: string | null;
+  hasMovedThisTurn: boolean;
+  activeEffects: Array<{
     id: string;
     type: string;
     duration: number;
     effect: () => void;
-  }[];
+  }>;
 } 

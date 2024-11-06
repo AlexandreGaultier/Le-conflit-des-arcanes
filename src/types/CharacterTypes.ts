@@ -1,5 +1,5 @@
 import type { Position } from './GameTypes'
-import type { InventoryItem } from '@/store/modules/characters'
+import type { InventoryItem } from './IngredientTypes'
 
 export enum CharacterClass {
   ELEMENTALIST = 'elementalist',
@@ -18,6 +18,12 @@ export enum SpellType {
   DEBUFF = 'debuff'
 }
 
+export enum AreaOfEffectType {
+  CIRCLE = 'CIRCLE',
+  SQUARE = 'SQUARE',
+  LINE = 'LINE'
+}
+
 export interface Spell {
   id: string;
   name: string;
@@ -25,12 +31,12 @@ export interface Spell {
   type: SpellType;
   damage?: number;
   range?: number;
-  duration?: number;
-  areaOfEffect?: {
-    type: 'square' | 'cross' | 'single';
+  cost: number;
+  areaOfEffect: {
+    type: AreaOfEffectType;
     size: number;
   };
-  cost: number;
+  duration?: number;
 }
 
 export interface Character {
@@ -42,6 +48,7 @@ export interface Character {
   maxHealth: number;
   currentHealth: number;
   inventory: InventoryItem[];
+  spells: Spell[];
 }
 
 export const CHARACTER_STATS = {
@@ -57,7 +64,7 @@ export const CHARACTER_STATS = {
         damage: 2,
         range: 3,
         cost: 1,
-        areaOfEffect: { type: 'single', size: 1 }
+        areaOfEffect: { type: AreaOfEffectType.SQUARE, size: 1 }
       },
       {
         id: 'ice-wall',
@@ -67,7 +74,7 @@ export const CHARACTER_STATS = {
         duration: 2,
         range: 2,
         cost: 2,
-        areaOfEffect: { type: 'single', size: 1 }
+        areaOfEffect: { type: AreaOfEffectType.SQUARE, size: 1 }
       },
       {
         id: 'storm',
@@ -77,7 +84,7 @@ export const CHARACTER_STATS = {
         damage: 1,
         range: 3,
         cost: 2,
-        areaOfEffect: { type: 'square', size: 3 }
+        areaOfEffect: { type: AreaOfEffectType.SQUARE, size: 3 }
       }
     ]
   },
@@ -93,7 +100,7 @@ export const CHARACTER_STATS = {
         damage: 1,
         range: 2,
         cost: 1,
-        areaOfEffect: { type: 'single', size: 1 }
+        areaOfEffect: { type: AreaOfEffectType.SQUARE, size: 1 }
       },
       {
         id: 'summon-skeleton',
@@ -102,7 +109,7 @@ export const CHARACTER_STATS = {
         type: SpellType.SUMMON,
         duration: 3,
         cost: 2,
-        areaOfEffect: { type: 'single', size: 1 }
+        areaOfEffect: { type: AreaOfEffectType.SQUARE, size: 1 }
       },
       {
         id: 'curse',
@@ -112,7 +119,7 @@ export const CHARACTER_STATS = {
         duration: 2,
         range: 3,
         cost: 2,
-        areaOfEffect: { type: 'single', size: 1 }
+        areaOfEffect: { type: AreaOfEffectType.SQUARE, size: 1 }
       }
     ]
   },
@@ -128,7 +135,7 @@ export const CHARACTER_STATS = {
         duration: 2,
         range: 3,
         cost: 2,
-        areaOfEffect: { type: 'single', size: 1 }
+        areaOfEffect: { type: AreaOfEffectType.SQUARE, size: 1 }
       },
       {
         id: 'teleport',
@@ -137,7 +144,7 @@ export const CHARACTER_STATS = {
         type: SpellType.UTILITY,
         range: 4,
         cost: 1,
-        areaOfEffect: { type: 'single', size: 1 }
+        areaOfEffect: { type: AreaOfEffectType.SQUARE, size: 1 }
       },
       {
         id: 'magic-shield',
@@ -146,7 +153,7 @@ export const CHARACTER_STATS = {
         type: SpellType.BUFF,
         duration: 2,
         cost: 2,
-        areaOfEffect: { type: 'single', size: 1 }
+        areaOfEffect: { type: AreaOfEffectType.SQUARE, size: 1 }
       }
     ]
   },
@@ -162,7 +169,7 @@ export const CHARACTER_STATS = {
         damage: 2,
         range: 3,
         cost: 2,
-        areaOfEffect: { type: 'cross', size: 1 }
+        areaOfEffect: { type: AreaOfEffectType.SQUARE, size: 1 }
       },
       {
         id: 'transmutation',
@@ -171,7 +178,7 @@ export const CHARACTER_STATS = {
         type: SpellType.UTILITY,
         range: 2,
         cost: 1,
-        areaOfEffect: { type: 'single', size: 1 }
+        areaOfEffect: { type: AreaOfEffectType.SQUARE, size: 1 }
       },
       {
         id: 'toxic-cloud',
@@ -182,7 +189,7 @@ export const CHARACTER_STATS = {
         duration: 2,
         range: 3,
         cost: 2,
-        areaOfEffect: { type: 'square', size: 2 }
+        areaOfEffect: { type: AreaOfEffectType.SQUARE, size: 2 }
       }
     ]
   }

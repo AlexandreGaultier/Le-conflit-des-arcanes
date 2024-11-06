@@ -81,7 +81,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { CharacterClass, CHARACTER_STATS } from '@/types/CharacterTypes'
+import { CharacterClass, CHARACTER_STATS, Character } from '@/types/CharacterTypes'
 import { useCharactersStore } from '@/store/modules/characters'
 
 const router = useRouter()

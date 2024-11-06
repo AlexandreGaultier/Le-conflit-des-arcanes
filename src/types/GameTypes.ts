@@ -1,3 +1,5 @@
+import { Ingredient } from "./IngredientTypes";
+
 export enum CellType {
   EMPTY = 'empty',
   INGREDIENT = 'ingredient',
@@ -12,6 +14,7 @@ export interface Cell {
   type: CellType;
   x: number;
   y: number;
+  content?: Ingredient | Monster;
 }
 
 export interface BoardConfig {
@@ -25,3 +28,13 @@ export interface Position {
   x: number;
   y: number;
 } 
+
+export interface Monster {
+  type: MonsterType;
+}
+
+export enum MonsterType {
+  PETIT_MONSTRE = 'petit_monstre',
+  MONSTRE_MOYEN = 'monstre_moyen',
+  MONSTRE_GRAND = 'monstre_grand'
+}

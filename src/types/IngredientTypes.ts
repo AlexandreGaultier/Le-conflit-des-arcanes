@@ -31,6 +31,7 @@ export interface Ingredient {
   rarity: number; // 1-5
   baseEffect: Effect;
   combinationEffects?: Effect[];
+  emoji?: string;
 }
 
 export interface InventoryItem {

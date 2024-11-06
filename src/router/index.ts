@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import CharacterSelectionView from '@/views/CharacterSelectionView.vue';
 import Game from '@/views/Game.vue';
-import { useCharactersStore } from '@/store/modules/characters';
+import { useCharactersStore } from '../store/modules/characters';
 import Task from '@/components/Task.vue';
 import Gantt from '@/components/Gantt.vue';
 

@@ -7,7 +7,7 @@
       <div class="gantt-header">
         <div class="task-info-header">Tâches</div>
         <div class="timeline-header">
-          <div v-for="date in timelineDates" :key="date" class="date-column">
+          <div v-for="date in timelineDates" :key="date.getTime()" class="date-column">
             {{ formatDate(date) }}
           </div>
         </div>
@@ -26,7 +26,7 @@
             <div 
               class="task-bar"
               :style="getTaskStyle(task)"
-              @mouseenter="showTaskDetails(task)"
+              @mouseenter="showTaskDetails(task, $event)"
               @mouseleave="hideTaskDetails"
             ></div>
           </div>
@@ -49,8 +49,20 @@
 import { ref, computed } from 'vue'
 import tasksData from '../data/tasks.json'
 
+interface Task {
+  id: string | number
+  title: string
+  description: string
+  startDate: string
+  endDate: string
+  priority: string
+  details: {
+    estimatedTime: string
+  }
+}
+
 const tasks = ref(tasksData.tasks)
-const selectedTask = ref(null)
+const selectedTask = ref<Task | null>(null)
 const mousePosition = ref({ x: 0, y: 0 })
 
 // Calcul des dates pour la timeline
@@ -74,13 +86,13 @@ const formatDate = (date: string | Date) => {
   })
 }
 
-const getTaskStyle = (task) => {
+const getTaskStyle = (task: Task) => {
   const start = new Date(task.startDate)
   const end = new Date(task.endDate)
   const totalDays = timelineDates.value.length
   
-  const startOffset = (start - timelineDates.value[0]) / (1000 * 60 * 60 * 24)
-  const duration = (end - start) / (1000 * 60 * 60 * 24) + 1
+  const startOffset = (start.getTime() - timelineDates.value[0].getTime()) / (1000 * 60 * 60 * 24)
+  const duration = (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24) + 1
   
   return {
     left: `${(startOffset / totalDays) * 100}%`,
@@ -90,7 +102,7 @@ const getTaskStyle = (task) => {
   }
 }
 
-const showTaskDetails = (task, event) => {
+const showTaskDetails = (task: Task, event: MouseEvent) => {
   selectedTask.value = task
   mousePosition.value = { x: event.clientX, y: event.clientY }
 }

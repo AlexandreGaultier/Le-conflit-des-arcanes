@@ -34,14 +34,14 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useCharactersStore } from '@/store/modules/characters'
-import { useTurnsStore } from '@/store/modules/turns'
-import { BoardGenerator } from '@/services/BoardGenerator'
+import { useCharactersStore } from '../store/modules/characters'
+import { useTurnsStore } from '../store/modules/turns'
+import { BoardGenerator } from '../services/BoardGenerator'
 import GameBoard from '@/components/GameBoard.vue'
 import TurnManager from '@/components/TurnManager.vue'
 import DiceRollModal from '@/components/DiceRollModal.vue'
 import CharacterBoard from '@/components/CharacterBoard.vue'
-import type { Cell } from '@/types/GameTypes'
+import type { Cell } from '../types/GameTypes'
 
 const charactersStore = useCharactersStore()
 const turnsStore = useTurnsStore()

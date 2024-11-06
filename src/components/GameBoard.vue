@@ -19,10 +19,9 @@
         :data-y="cell.y"
         @click="handleCellClick(cell)"
       >
-        {{ cell.content?.emoji }}
         <div class="cell-coordinates">{{ cell.x }},{{ cell.y }}</div>
         <div v-if="cell.content" class="cell-content">
-          {{ cell.content.name }}
+          {{ 'name' in cell.content ? cell.content.name : cell.content.type }}
         </div>
         
         <div 
@@ -37,14 +36,14 @@
         </div>
       </div>
     </div>
-    <div 
+    <!-- <div 
       v-for="particle in particles" 
       :key="particle.id"
       class="collect-particle"
       :style="particle.style"
     >
       {{ particle.emoji }}
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -66,6 +65,7 @@ const turnsStore = useTurnsStore()
 const props = defineProps<{
   board: Cell[][]
 }>()
+
 
 // Style du plateau
 const boardStyle = computed(() => ({
@@ -89,7 +89,9 @@ const getCharacterAtPosition = (x: number, y: number) => {
   )
 }
 
-const getClassEmoji = (characterClass: CharacterClass): string => {
+const getClassEmoji = (characterClass: CharacterClass | undefined): string => {
+  if (!characterClass) return ''
+  
   const emojis = {
     [CharacterClass.ELEMENTALIST]: '🔥',
     [CharacterClass.NECROMANCER]: '💀',
@@ -151,7 +153,7 @@ const collectIngredient = (cell: Cell) => {
   const ingredientsStore = useIngredientsStore()
   
   // Normalisation du type (suppression des accents et espaces)
-  const normalizedType = cell.content.name
+  const normalizedType = cell.content.type
     .normalize('NFD')
     // .replace(/[\u0300-\u036f]/g, '') // Supprime les accents
     .toUpperCase()

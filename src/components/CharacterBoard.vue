@@ -13,13 +13,13 @@
     <div class="character-stats">
       <div class="stat-item">
         <span class="stat-label">PV</span>
-        <div>{{ character.hp }}/{{ character.maxHp }}</div>
+        <div>{{ character.currentHealth }}/{{ character.maxHealth }}</div>
         <div class="health-bar">
           <div 
             class="health-fill" 
-            :style="{ width: `${(character.hp / character.maxHp) * 100}%` }"
+            :style="{ width: `${(character.currentHealth / character.maxHealth) * 100}%` }"
           ></div>
-          <span class="health-text">{{ character.hp }}/{{ character.maxHp }}</span>
+          <span class="health-text">{{ character.currentHealth }}/{{ character.maxHealth }}</span>
         </div>
       </div>
       <div class="stat-item">
@@ -66,12 +66,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Character, CharacterClass, Spell } from '@/types/CharacterTypes'
+import { Character, CharacterClass, Spell } from '../types/CharacterTypes'
 import IngredientInventory from './IngredientInventory.vue'
 
 const props = defineProps<{
   character: Character
 }>()
+
+const character = ref<Character>(props.character)
 
 const selectedSpell = ref<Spell | null>(null)
 

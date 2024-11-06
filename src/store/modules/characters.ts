@@ -16,7 +16,7 @@ const DEFAULT_NAMES = {
 
 export const useCharactersStore = defineStore('characters', {
   state: (): CharactersState => ({
-    characters: [],
+    characters: [] as Character[],
     selectedCharacterId: null
   }),
 
@@ -33,13 +33,12 @@ export const useCharactersStore = defineStore('characters', {
         id: crypto.randomUUID(),
         class: characterClass,
         name: name || defaultName,
-        hp: CHARACTER_STATS[characterClass].baseHp,
-        maxHp: CHARACTER_STATS[characterClass].baseHp,
+        currentHealth: CHARACTER_STATS[characterClass].baseHp,
+        maxHealth: CHARACTER_STATS[characterClass].baseHp,
         movement: CHARACTER_STATS[characterClass].movement,
         spells: CHARACTER_STATS[characterClass].spells,
-        level: 1,
-        experience: 0,
-        position: undefined
+        inventory: [],
+        position: null
       }
       
       this.characters.push(character)
@@ -54,20 +53,6 @@ export const useCharactersStore = defineStore('characters', {
       const character = this.characters.find(c => c.id === characterId)
       if (character) {
         character.position = { x, y }
-      }
-    },
-
-    gainExperience(characterId: string, amount: number) {
-      const character = this.characters.find(c => c.id === characterId)
-      if (character) {
-        character.experience += amount
-        // Système de niveau simple : chaque niveau nécessite 100 XP
-        const newLevel = Math.floor(character.experience / 100) + 1
-        if (newLevel > character.level) {
-          character.level = newLevel
-          character.maxHp += 1
-          character.hp = character.maxHp
-        }
       }
     },
 
@@ -98,7 +83,7 @@ export const useCharactersStore = defineStore('characters', {
 
       if (character.inventory.length < 8) {
         character.inventory.push(item)
-        console.log(`${item.name} ajouté à l'inventaire de ${character.name}`)
+        console.log(`${item.ingredient.name} ajouté à l'inventaire de ${character.name}`)
       } else {
         console.log('Inventaire plein !')
       }

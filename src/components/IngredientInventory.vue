@@ -69,7 +69,7 @@ const getIngredientEmoji = (type: IngredientType): string => {
   return emojis[type] || '❓'
 }
 
-const canUseForSpell = () => {
+const canUseForSpell = (ingredient: any): boolean => {
   return false
 }
 
