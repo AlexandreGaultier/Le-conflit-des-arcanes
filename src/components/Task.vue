@@ -10,12 +10,12 @@
       <div class="column" v-for="(status, index) in statuses" :key="index">
         <div class="column-header">
           <h2>{{ status.title }}</h2>
-          <span class="task-count">{{ tasks.filter(t => t.status === status.key).length }} tâches</span>
+          <span class="task-count">{{ tasks.filter((t: Task) => t.status === status.key).length }} tâches</span>
         </div>
         <div class="task-list">
           <div 
             class="task-card" 
-            v-for="task in tasks.filter(t => t.status === status.key)" 
+            v-for="task in tasks.filter((t: Task) => t.status === status.key)" 
             :key="task.id"
             @click="openTaskModal(task)"
           >
@@ -72,8 +72,8 @@
                 <label class="checkbox-container">
                   <input 
                     type="checkbox" 
-                    :checked="isRequirementCompleted(selectedTask.id, requirement)"
-                    @change="toggleRequirement(selectedTask.id, requirement)"
+                    :checked="isRequirementCompleted(Number(selectedTask.id), requirement)"
+                    @change="toggleRequirement(Number(selectedTask.id), requirement)"
                   >
                   <span class="checkmark"></span>
                   <span class="requirement-text">{{ requirement }}</span>
@@ -117,6 +117,18 @@
 import { ref, onMounted, watch } from 'vue'
 import tasksData from '../data/tasks.json'
 
+interface Task {
+  id: string | number
+  title: string
+  description: string
+  status: string
+  priority: string
+  details: {
+    technicalRequirements: string[]
+    estimatedTime: string
+  }
+}
+
 // Clé pour le localStorage
 const STORAGE_KEY = 'game-dev-tasks'
 
@@ -132,7 +144,7 @@ interface RequirementState {
 
 // Charger les tâches depuis le localStorage ou utiliser les données par défaut
 const tasks = ref(loadTasks())
-const selectedTask = ref(null)
+const selectedTask = ref<Task | null>(null)
 const statuses = ref([
   { title: 'À faire', key: 'todo' },
   { title: 'En cours', key: 'in-progress' },
@@ -159,7 +171,7 @@ watch(tasks, () => {
 }, { deep: true })
 
 // Modification de la fonction moveTask pour utiliser la réactivité de Vue
-const moveTask = (task, direction) => {
+const moveTask = (task: Task, direction: string) => {
   const statusOrder = ['todo', 'in-progress', 'done']
   const currentIndex = statusOrder.indexOf(task.status)
   
@@ -181,7 +193,7 @@ const resetTasks = () => {
   saveRequirementStates()
 }
 
-const openTaskModal = (task) => {
+const openTaskModal = (task: Task) => {
   selectedTask.value = task
 }
 
@@ -189,7 +201,7 @@ const closeTaskModal = () => {
   selectedTask.value = null
 }
 
-const getStatusTitle = (key) => {
+const getStatusTitle = (key: string) => {
   return statuses.value.find(s => s.key === key)?.title
 }
 
@@ -243,11 +255,11 @@ function toggleRequirement(taskId: number, requirement: string) {
 }
 
 function updateTaskStatus(taskId: number) {
-  const task = tasks.value.find(t => t.id === taskId)
+  const task = tasks.value.find((t: Task) => t.id === taskId)
   if (!task) return
 
   const requirements = task.details.technicalRequirements
-  const completedCount = requirements.filter(r => isRequirementCompleted(taskId, r)).length
+  const completedCount = requirements.filter((r: string) => isRequirementCompleted(taskId, r)).length
   
   if (completedCount === requirements.length && task.status !== 'done') {
     task.status = 'done'

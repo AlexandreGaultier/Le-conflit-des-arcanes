@@ -1,4 +1,4 @@
-import { CellType, Cell, BoardConfig, Position } from '@/types/GameTypes'
+import { CellType, Cell, BoardConfig, Position, Monster, Special, Ingredient } from '@/types/GameTypes'
 
 export class BoardGenerator {
   private config: BoardConfig
@@ -10,10 +10,11 @@ export class BoardGenerator {
       distribution: {
         [CellType.EMPTY]: 0.25,
         [CellType.INGREDIENT]: 0.35,
-        [CellType.OBJECT]: 0.1,
+        [CellType.OBSTACLE]: 0.1,
         [CellType.MONSTER]: 0.15,
         [CellType.SPECIAL]: 0.1,
-        [CellType.DENSE_WOOD]: 0.05
+        [CellType.DENSE_WOOD]: 0.05,
+        [CellType.SPAWN]: 0
       }
     }
   }
@@ -146,7 +147,7 @@ export class BoardGenerator {
               type,
               x: symmetricX,
               y: symmetricY,
-              content: { ...content }
+              content: content ? { ...content } : undefined
             }
           }
         }
@@ -187,12 +188,8 @@ export class BoardGenerator {
     return positions
   }
 
-  private generateContent(type: CellType) {
+  private generateContent(type: CellType): Monster | Special | undefined {
     switch (type) {
-      case CellType.INGREDIENT:
-        return this.generateIngredient()
-      case CellType.OBJECT:
-        return this.generateObject()
       case CellType.MONSTER:
         return this.generateMonster()
       case CellType.SPECIAL:
@@ -202,7 +199,7 @@ export class BoardGenerator {
     }
   }
 
-  private generateIngredient() {
+  private generateIngredient(): Ingredient {
     const ingredients = [
       'Champignon magique',
       'Cristal de mana',
@@ -220,22 +217,7 @@ export class BoardGenerator {
     }
   }
 
-  private generateObject() {
-    const objects = [
-      'Baguette',
-      'Grimoire',
-      'Amulette',
-      'Bottes',
-      'Potion'
-    ]
-    return {
-      id: `obj_${Math.random().toString(36).substr(2, 9)}`,
-      name: objects[Math.floor(Math.random() * objects.length)],
-      variant: Math.floor(Math.random() * 3) + 1
-    }
-  }
-
-  private generateMonster() {
+  private generateMonster(): Monster {
     const monsters = [
       'Petit monstre',
       'Monstre moyen',
@@ -248,7 +230,7 @@ export class BoardGenerator {
     }
   }
 
-  private generateSpecial() {
+  private generateSpecial(): Special {
     const specials = [
       'Portail',
       'Piège',
@@ -469,9 +451,9 @@ export class BoardGenerator {
     this.createSpawnPoints()
     
     // Générer moins de bois dense et de manière plus espacée
-    const reducedPatterns = this.generateRandomPatterns().slice(0, Math.floor(this.config.size / 4))
+    const reducedPatterns = this.generateBalancedWoodPatterns().slice(0, Math.floor(this.config.size / 4))
     
-    reducedPatterns.forEach(pattern => {
+    reducedPatterns.forEach((pattern: number[][]) => {
       pattern.forEach(([x, y]) => {
         if (!this.isSpawnPoint(x, y) && this.hasEnoughSpace(x, y)) {
           this.board[y][x].type = CellType.DENSE_WOOD

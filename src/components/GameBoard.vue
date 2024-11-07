@@ -2,7 +2,7 @@
   <div class="game-board" :style="boardStyle">
     <div v-for="row in board" :key="row[0].y" class="board-row">
       <div 
-        v-for="(cell, index) in row" 
+        v-for="(cell) in row" 
         :key="`${cell.x}-${cell.y}`"
         class="board-cell"
         :class="[
@@ -21,7 +21,6 @@
       >
         <div class="cell-coordinates">{{ cell.x }},{{ cell.y }}</div>
         <div v-if="cell.content" class="cell-content">
-          {{ 'name' in cell.content ? cell.content.name : cell.content.type }}
         </div>
         
         <div 
@@ -48,15 +47,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { computed } from 'vue'
 import { useCharactersStore } from '@/store/modules/characters'
 import { useTurnsStore } from '@/store/modules/turns'
 import { useIngredientsStore } from '@/store/modules/ingredients'
 import { CharacterClass } from '@/types/CharacterTypes'
-import { CellType } from '@/types/GameTypes'
 import type { Cell } from '@/types/GameTypes'
 import { IngredientType } from '@/types/IngredientTypes'
-import { toRaw } from 'vue'
 
 const charactersStore = useCharactersStore()
 const turnsStore = useTurnsStore()
@@ -148,17 +145,16 @@ const canCollectIngredient = (cell: Cell): boolean => {
 }
 
 const collectIngredient = (cell: Cell) => {
-  if (!currentCharacter.value || !cell.content) return
+  if (!currentCharacter.value || !cell.content || !('type' in cell.content)) return
 
-  const ingredientsStore = useIngredientsStore()
-  
-  // Normalisation du type (suppression des accents et espaces)
-  const normalizedType = cell.content.type
+  const contentType = (cell.content as { type: string }).type
+  const normalizedType = contentType
     .normalize('NFD')
-    // .replace(/[\u0300-\u036f]/g, '') // Supprime les accents
     .toUpperCase()
     .replace(/ /g, '_') as IngredientType
 
+  const ingredientsStore = useIngredientsStore()
+  
   ingredientsStore.addIngredient(
     currentCharacter.value.id,
     {
