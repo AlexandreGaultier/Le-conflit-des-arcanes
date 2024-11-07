@@ -71,6 +71,7 @@ const getIngredientEmoji = (type: IngredientType): string => {
 }
 
 const canUseForSpell = (ingredient: Ingredient): boolean => {
+  console.log('ingredient', ingredient)
   return false
 }
 
