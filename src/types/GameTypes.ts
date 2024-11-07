@@ -1,4 +1,6 @@
-  export enum CellType {
+import { IngredientType } from "./IngredientTypes";
+
+export enum CellType {
   EMPTY = 'empty',
   INGREDIENT = 'ingredient',
   OBSTACLE = 'obstacle',
@@ -46,7 +48,6 @@ export interface Special {
 }
 
 export interface Ingredient {
-  id: string
-  name: string
-  variant: number
+  type: IngredientType;
+  quantity: number; 
 }

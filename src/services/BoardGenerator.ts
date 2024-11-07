@@ -199,23 +199,23 @@ export class BoardGenerator {
     }
   }
 
-  private generateIngredient(): Ingredient {
-    const ingredients = [
-      'Champignon magique',
-      'Cristal de mana',
-      'Herbe mystique',
-      'Poudre de fée',
-      'Racine ancienne',
-      'Baie enchantée',
-      'Plume de phénix',
-      'Essence élémentaire'
-    ]
-    return {
-      id: `ing_${Math.random().toString(36).substr(2, 9)}`,
-      name: ingredients[Math.floor(Math.random() * ingredients.length)],
-      variant: Math.floor(Math.random() * 3) + 1
-    }
-  }
+  // private generateIngredient(): Ingredient {
+  //   const ingredients = [
+  //     'Champignon magique',
+  //     'Cristal de mana',
+  //     'Herbe mystique',
+  //     'Poudre de fée',
+  //     'Racine ancienne',
+  //     'Baie enchantée',
+  //     'Plume de phénix',
+  //     'Essence élémentaire'
+  //   ]
+  //   return {
+  //     id: `ing_${Math.random().toString(36).substr(2, 9)}`,
+  //     name: ingredients[Math.floor(Math.random() * ingredients.length)],
+  //     variant: Math.floor(Math.random() * 3) + 1
+  //   }
+  // }
 
   private generateMonster(): Monster {
     const monsters = [

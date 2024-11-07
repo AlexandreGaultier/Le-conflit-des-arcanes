@@ -32,8 +32,9 @@
 <script setup lang="ts">
 import { defineProps, watch } from 'vue'
 import { useIngredientsStore } from '@/store/modules/ingredients'
+import { Ingredient } from '@/types/GameTypes'
 import { IngredientType } from '@/types/IngredientTypes'
-
+  
 const props = defineProps<{
   playerName: string,
   playerId: string
@@ -69,7 +70,7 @@ const getIngredientEmoji = (type: IngredientType): string => {
   return emojis[type] || '❓'
 }
 
-const canUseForSpell = (ingredient: any): boolean => {
+const canUseForSpell = (ingredient: Ingredient): boolean => {
   return false
 }
 

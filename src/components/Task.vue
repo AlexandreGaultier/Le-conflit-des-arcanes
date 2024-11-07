@@ -206,29 +206,29 @@ const getStatusTitle = (key: string) => {
 }
 
 // Nouvelles fonctions
-const formatDate = (dateString: string) => {
-  if (!dateString) return 'Non définie'
-  return new Date(dateString).toLocaleDateString('fr-FR', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric'
-  })
-}
+// const formatDate = (dateString: string) => {
+//   if (!dateString) return 'Non définie'
+//   return new Date(dateString).toLocaleDateString('fr-FR', {
+//     day: '2-digit',
+//     month: 'short',
+//     year: 'numeric'
+//   })
+// }
 
-const isDeadlineClose = (deadline: string) => {
-  if (!deadline) return false
-  const daysUntilDeadline = Math.ceil(
-    (new Date(deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
-  )
-  return daysUntilDeadline <= 7 && daysUntilDeadline > 0
-}
+// const isDeadlineClose = (deadline: string) => {
+//   if (!deadline) return false
+//   const daysUntilDeadline = Math.ceil(
+//     (new Date(deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+//   )
+//   return daysUntilDeadline <= 7 && daysUntilDeadline > 0
+// }
 
-const getProgressClass = (progress: number) => {
-  if (!progress) return 'progress-none'
-  if (progress < 30) return 'progress-low'
-  if (progress < 70) return 'progress-medium'
-  return 'progress-high'
-}
+// const getProgressClass = (progress: number) => {
+//   if (!progress) return 'progress-none'
+//   if (progress < 30) return 'progress-low'
+//   if (progress < 70) return 'progress-medium'
+//   return 'progress-high'
+// }
 
 function loadRequirementStates(): RequirementState {
   const saved = localStorage.getItem(REQUIREMENTS_KEY)
