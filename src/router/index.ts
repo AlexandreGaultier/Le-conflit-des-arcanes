@@ -33,7 +33,7 @@ const router = createRouter({
       path: '/game',
       name: 'game',
       component: Game,
-      beforeEnter: (to, from, next) => {
+      beforeEnter: (_to, _from, next) => {
         const charactersStore = useCharactersStore();
         if (charactersStore.characters.length < 2) {
           next({ name: 'character-selection' });

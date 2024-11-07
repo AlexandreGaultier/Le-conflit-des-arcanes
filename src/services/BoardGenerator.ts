@@ -1,4 +1,4 @@
-import { CellType, Cell, BoardConfig, Position, Monster, Special, Ingredient } from '@/types/GameTypes'
+import { CellType, Cell, BoardConfig, Position, Monster, Special } from '@/types/GameTypes'
 
 export class BoardGenerator {
   private config: BoardConfig
@@ -77,7 +77,7 @@ export class BoardGenerator {
   }
 
   private distributeElementsSymmetrically(): void {
-    const halfSize = Math.floor(this.config.size / 2)
+    // const halfSize = Math.floor(this.config.size / 2)
     const positions = this.getHalfBoardPositions()
     this.shuffleArray(positions)
 
@@ -244,15 +244,15 @@ export class BoardGenerator {
     }
   }
 
-  private getAllPositions(): number[][] {
-    const positions: number[][] = []
-    for (let y = 0; y < this.config.size; y++) {
-      for (let x = 0; x < this.config.size; x++) {
-        positions.push([x, y])
-      }
-    }
-    return positions
-  }
+  // private getAllPositions(): number[][] {
+  //   const positions: number[][] = []
+  //   for (let y = 0; y < this.config.size; y++) {
+  //     for (let x = 0; x < this.config.size; x++) {
+  //       positions.push([x, y])
+  //     }
+  //   }
+  //   return positions
+  // }
 
   private shuffleArray(array: any[]): void {
     for (let i = array.length - 1; i > 0; i--) {
@@ -262,7 +262,7 @@ export class BoardGenerator {
   }
 
   private generateDenseWoodPatterns(): void {
-    const halfSize = Math.floor(this.config.size / 2)
+    // const halfSize = Math.floor(this.config.size / 2)
     const centerOffset = Math.floor(this.config.size / 2) - 1
     
     // Définir la zone centrale à protéger (2x2 au milieu)
